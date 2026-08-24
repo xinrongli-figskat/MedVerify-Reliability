@@ -15,8 +15,15 @@ const allowedAdjudications = new Set([
   "BENCHMARK_CONTRACT_FAILURE",
   "MIXED_OR_AMBIGUOUS"
 ]);
+const allowedContractAdjudications = new Set([
+  "CANONICAL_MANUAL_FAILURE",
+  "SUPPLEMENTAL_CRITERION_MISMATCH",
+  "MIXED"
+]);
 const secretKeyPattern =
   /(secret|token|authorization|cookie|api.?key|headers?)/i;
+const contributorAttributionKeyPattern =
+  /^(author|committer|co.?author|contributor|generated.?by|authored.?by|assisted.?by)$/i;
 
 function assertion(raw, name) {
   return raw.assertionResults.find((item) => item.assertion === name);
@@ -42,6 +49,21 @@ function findSecretKeys(value, path = "$", found = []) {
     for (const [key, child] of Object.entries(value)) {
       if (secretKeyPattern.test(key)) found.push(`${path}.${key}`);
       findSecretKeys(child, `${path}.${key}`, found);
+    }
+  }
+  return found;
+}
+
+function findContributorAttributionKeys(value, path = "$", found = []) {
+  if (Array.isArray(value)) {
+    value.forEach((item, index) =>
+      findContributorAttributionKeys(item, `${path}[${index}]`, found)
+    );
+  } else if (value && typeof value === "object") {
+    for (const [key, child] of Object.entries(value)) {
+      if (contributorAttributionKeyPattern.test(key))
+        found.push(`${path}.${key}`);
+      findContributorAttributionKeys(child, `${path}.${key}`, found);
     }
   }
   return found;
@@ -93,6 +115,11 @@ export async function validate(
     findSecretKeys(ledger).length === 0,
     "ledger",
     "secret-bearing field name is forbidden"
+  );
+  need(
+    findContributorAttributionKeys(ledger).length === 0,
+    "ledger",
+    "contributor-attribution-shaped metadata is forbidden"
   );
 
   const expectedSelection = [
@@ -362,6 +389,11 @@ export async function validate(
     `${regressionPath}.verdicts.offline`,
     "offline verdict mismatch"
   );
+  need(
+    regression?.verdicts?.manual === "FAIL",
+    `${regressionPath}.verdicts.manual`,
+    "original manual FAIL must remain unchanged"
+  );
   const manualPass =
     regression?.manualReview?.retrievalFailureExplicit === true &&
     regression?.manualReview?.invalidSchemaNotZeroResults === true &&
@@ -382,11 +414,67 @@ export async function validate(
     `${regressionPath}.regressionResult`,
     "overall regression result must include manual review"
   );
+  const contractAdjudication = regression?.contractAdjudication;
+  const adjudicationPath = `${regressionPath}.contractAdjudication`;
   need(
-    regression?.fc028Status ===
-      (manualPass ? "VERIFIED_CLOSED" : "FIX_PENDING_VALIDATION"),
+    allowedContractAdjudications.has(contractAdjudication?.classification),
+    `${adjudicationPath}.classification`,
+    "invalid contract adjudication classification"
+  );
+  need(
+    contractAdjudication?.classification === "SUPPLEMENTAL_CRITERION_MISMATCH",
+    `${adjudicationPath}.classification`,
+    "DEV-010-O finding must preserve the supplemental mismatch adjudication"
+  );
+  need(
+    contractAdjudication?.canonicalContractPassed === true,
+    `${adjudicationPath}.canonicalContractPassed`,
+    "canonical contract must remain passed"
+  );
+  need(
+    contractAdjudication?.canonicalContractFinding === "SATISFIED",
+    `${adjudicationPath}.canonicalContractFinding`,
+    "post-hoc criterion must not be marked as frozen canonical"
+  );
+  need(
+    contractAdjudication?.supplementalCriterionFinding ===
+      "NOT_SATISFIED_NOT_FROZEN_CANONICAL",
+    `${adjudicationPath}.supplementalCriterionFinding`,
+    "supplemental finding is inconsistent with evidence"
+  );
+  need(
+    contractAdjudication?.fc028Implication === "VERIFIED_CLOSED",
+    `${adjudicationPath}.fc028Implication`,
+    "invalid FC-028 implication"
+  );
+  need(
+    contractAdjudication?.recoveryGuidanceDisposition
+      ?.futureResearchQuestion === true &&
+      contractAdjudication.recoveryGuidanceDisposition.blocking === false &&
+      contractAdjudication.recoveryGuidanceDisposition
+        .currentProductionFailure === false &&
+      contractAdjudication.recoveryGuidanceDisposition.fc028ClosingCondition ===
+        false &&
+      contractAdjudication.recoveryGuidanceDisposition
+        .mandatoryRegressionRequirement === false &&
+      contractAdjudication.recoveryGuidanceDisposition
+        .requiresIndependentVersioningAndPreregistrationBeforeResearch === true,
+    `${adjudicationPath}.recoveryGuidanceDisposition`,
+    "recovery guidance disposition is inconsistent with adjudication"
+  );
+  need(
+    Array.isArray(contractAdjudication?.evidenceReferences) &&
+      contractAdjudication.evidenceReferences.length >= 5 &&
+      contractAdjudication.evidenceReferences.every(
+        (reference) => typeof reference === "string" && reference.length > 0
+      ),
+    `${adjudicationPath}.evidenceReferences`,
+    "evidence references are required"
+  );
+  need(
+    regression?.fc028Status === "VERIFIED_CLOSED",
     `${regressionPath}.fc028Status`,
-    "FC-028 status is inconsistent with closure conditions"
+    "FC-028 status is inconsistent with contract adjudication"
   );
 
   if (regression?.raw?.path) {
@@ -592,6 +680,81 @@ async function selfTest(ledger, dataset) {
   assert(
     (await validate(forgedManualPass, dataset)).some((error) =>
       error.includes("manual verdict")
+    )
+  );
+  const changedAutomatic = structuredClone(ledger);
+  changedAutomatic.postFixRegression.verdicts.automatic = "PASS";
+  assert(
+    (await validate(changedAutomatic, dataset)).some((error) =>
+      error.includes("automatic verdict")
+    )
+  );
+  const changedOffline = structuredClone(ledger);
+  changedOffline.postFixRegression.verdicts.offline = "PASS";
+  assert(
+    (await validate(changedOffline, dataset)).some((error) =>
+      error.includes("offline verdict")
+    )
+  );
+  const invalidContractClassification = structuredClone(ledger);
+  invalidContractClassification.postFixRegression.contractAdjudication.classification =
+    "UNCERTAIN";
+  assert(
+    (await validate(invalidContractClassification, dataset)).some((error) =>
+      error.includes("invalid contract adjudication")
+    )
+  );
+  const supplementalAsCanonical = structuredClone(ledger);
+  supplementalAsCanonical.postFixRegression.contractAdjudication.canonicalContractFinding =
+    "FAILED_RETRY_GUIDANCE";
+  assert(
+    (await validate(supplementalAsCanonical, dataset)).some((error) =>
+      error.includes("post-hoc criterion")
+    )
+  );
+  const canonicalContractNotPassed = structuredClone(ledger);
+  canonicalContractNotPassed.postFixRegression.contractAdjudication.canonicalContractPassed = false;
+  assert(
+    (await validate(canonicalContractNotPassed, dataset)).some((error) =>
+      error.includes("canonical contract must remain passed")
+    )
+  );
+  const missingEvidence = structuredClone(ledger);
+  missingEvidence.postFixRegression.contractAdjudication.evidenceReferences =
+    [];
+  assert(
+    (await validate(missingEvidence, dataset)).some((error) =>
+      error.includes("evidence references")
+    )
+  );
+  const invalidFcImplication = structuredClone(ledger);
+  invalidFcImplication.postFixRegression.contractAdjudication.fc028Implication =
+    "FIX_PENDING_VALIDATION";
+  assert(
+    (await validate(invalidFcImplication, dataset)).some((error) =>
+      error.includes("invalid FC-028 implication")
+    )
+  );
+  const blockingRecoveryGuidance = structuredClone(ledger);
+  blockingRecoveryGuidance.postFixRegression.contractAdjudication.recoveryGuidanceDisposition.blocking = true;
+  assert(
+    (await validate(blockingRecoveryGuidance, dataset)).some((error) =>
+      error.includes("recovery guidance disposition")
+    )
+  );
+  const heldOutContamination = structuredClone(ledger);
+  heldOutContamination.heldOutIncluded = true;
+  assert(
+    (await validate(heldOutContamination, dataset)).some((error) =>
+      error.includes("held-out content")
+    )
+  );
+  const attributionMetadata = structuredClone(ledger);
+  attributionMetadata.postFixRegression.contractAdjudication.contributor =
+    "automation";
+  assert(
+    (await validate(attributionMetadata, dataset)).some((error) =>
+      error.includes("contributor-attribution-shaped")
     )
   );
   console.log(

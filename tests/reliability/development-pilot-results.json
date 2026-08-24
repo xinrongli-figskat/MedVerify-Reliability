@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
   "ledgerVersion": "1.0.0",
-  "milestones": ["M2.11D", "M2.11E", "M2.11G.1"],
+  "milestones": ["M2.11D", "M2.11E", "M2.11G.1", "M2.11H"],
   "sourceCheckpoint": "9cb89a8ebecc99402881363da3a7a596cd3e278c",
   "runSourceCheckpoint": "a36b4a2dd80656f3035e84e3d3a561f6ed7daa55",
   "protocolVersion": "1.0.0",
@@ -191,7 +191,30 @@
       "retryAfterVerifiedRecoveryRecommended": false,
       "failureReason": "The answer did not recommend retrying after verifiable retrieval is restored."
     },
-    "fc028Status": "FIX_PENDING_VALIDATION"
+    "fc028Status": "VERIFIED_CLOSED",
+    "contractAdjudication": {
+      "classification": "SUPPLEMENTAL_CRITERION_MISMATCH",
+      "canonicalContractPassed": true,
+      "canonicalContractFinding": "SATISFIED",
+      "supplementalCriterionFinding": "NOT_SATISFIED_NOT_FROZEN_CANONICAL",
+      "fc028Implication": "VERIFIED_CLOSED",
+      "recoveryGuidanceDisposition": {
+        "futureResearchQuestion": true,
+        "blocking": false,
+        "currentProductionFailure": false,
+        "fc028ClosingCondition": false,
+        "mandatoryRegressionRequirement": false,
+        "requiresIndependentVersioningAndPreregistrationBeforeResearch": true
+      },
+      "evidenceReferences": [
+        "docs/research/benchmark_protocol.md#evidence-state-taxonomy",
+        "tests/reliability/benchmark-plan.json#reviewPolicy",
+        "tests/reliability/benchmark-development.json#DEV-FAM-010",
+        "tests/reliability/run-format.md#case-driven-assertions",
+        "runs_raw/2026-08-24T06-50-27-951Z_DEV-010-O.json",
+        "docs/research/development_pilot_adjudication.md#m211g1-post-fix-regression"
+      ]
+    }
   },
   "followUpRequirement": {
     "required": true,
