@@ -1,0 +1,224 @@
+{
+  "runId": "2026-08-24T05-07-13-424Z_DEV-010-O",
+  "caseId": "DEV-010-O",
+  "timestamp": "2026-08-24T05:07:13.424Z",
+  "gitCommit": "a36b4a2dd80656f3035e84e3d3a561f6ed7daa55",
+  "dirtyWorktree": true,
+  "baseUrl": "http://127.0.0.1:5180",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-dev-010-o-20260824050713-007d61a6",
+  "sessionIsolated": true,
+  "initialMessageCount": 0,
+  "messageCount": 2,
+  "requestId": "dc4c00db-62a6-4386-aa25-c36aa3de643d",
+  "userMessageId": "62a27f53-0c8c-48be-94f6-fab98ed4dd49",
+  "userInput": "Search for the fictional Kappa outcome and reject a search response with an invalid schema.",
+  "toolCallCount": 0,
+  "toolCalls": [],
+  "finalAnswer": "I cannot perform a PubMed search or retrieve evidence for a specific term like the \"Kappa outcome,\" as it appears to be non-standard terminology or specific to a fictional context. Without valid sources or established medical literature defining this outcome, I cannot provide literature-verified information.\n\nSince I cannot verify the existence or mechanics of such an outcome, I strongly suggest consulting with a healthcare provider or medical professional for case-specific details. If you have general medical questions, I can provide broad educational information based on standard medical consensus.",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "completed",
+    "matchingFrameCount": 88,
+    "doneFrameCount": 1,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {
+      "start": 1,
+      "start-step": 1,
+      "text-start": 1,
+      "text-delta": 81,
+      "text-end": 1,
+      "finish-step": 1,
+      "finish": 1
+    },
+    "uiFinishSeen": true,
+    "uiFinishReason": null,
+    "requestCompletedAt": "2026-08-24T05:07:50.983Z",
+    "pollingAttempts": 1,
+    "pollingElapsedMs": 20,
+    "completionCriterion": "explicit_terminal_state",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": 20,
+    "finalAnswerExtractedAt": "2026-08-24T05:07:51.004Z",
+    "pollSnapshots": [
+      {
+        "elapsedMs": 20,
+        "messageCount": 2,
+        "assistantSummary": {
+          "found": true,
+          "id": "assistant_1787548033946_dwuujf19w",
+          "role": "assistant",
+          "partCount": 2,
+          "partTypes": [
+            "step-start",
+            "text"
+          ],
+          "partTypeCounts": {
+            "step-start": 1,
+            "text": 1
+          },
+          "textPartCount": 1,
+          "textPartLengths": [
+            607
+          ],
+          "totalTextLength": 607,
+          "trimmedCombinedTextLength": 607,
+          "textPartStates": [
+            "done"
+          ],
+          "reasoningPartCount": 0,
+          "toolPartCount": 0,
+          "otherPartCount": 1,
+          "finishReason": null
+        }
+      }
+    ],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": true,
+      "id": "assistant_1787548033946_dwuujf19w",
+      "role": "assistant",
+      "partCount": 2,
+      "partTypes": [
+        "step-start",
+        "text"
+      ],
+      "partTypeCounts": {
+        "step-start": 1,
+        "text": 1
+      },
+      "textPartCount": 1,
+      "textPartLengths": [
+        607
+      ],
+      "totalTextLength": 607,
+      "trimmedCombinedTextLength": 607,
+      "textPartStates": [
+        "done"
+      ],
+      "reasoningPartCount": 0,
+      "toolPartCount": 0,
+      "otherPartCount": 1,
+      "finishReason": null
+    }
+  },
+  "durationMs": 37595,
+  "errors": [],
+  "toolErrors": [],
+  "verdict": "FAIL",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": true,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 607,
+      "trimmedLength": 607
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": true,
+      "actual": "no errors"
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": false,
+      "expected": 1,
+      "actual": 0
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": false,
+      "expected": true,
+      "actual": []
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": []
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": []
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": false,
+      "expectedFailure": true,
+      "matchedExpectedFailure": false,
+      "unexpectedToolErrors": [],
+      "actual": []
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "expected_tool_outcome",
+      "hard": true,
+      "expectedOutcome": "invalid_response",
+      "actualOutcome": null,
+      "expectedFailureCategory": "schema_error",
+      "actualFailureCategory": null,
+      "expectedFailureStage": "esearch",
+      "actualFailureStage": null,
+      "expectedHttpStatus": null,
+      "actualHttpStatus": null,
+      "passed": false
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": []
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED"
+    }
+  ],
+  "benchmarkProtocolVersion": "1.0.0",
+  "benchmarkPlanVersion": "0.1.0-design",
+  "developmentDatasetVersion": "0.1.0-development",
+  "benchmarkSplit": "development",
+  "benchmarkFamilyId": "DEV-FAM-010",
+  "benchmarkVariantId": "DEV-010-O",
+  "benchmarkCoverageCellId": null,
+  "perturbationType": "original",
+  "language": "en",
+  "executionPlanVersion": "1.0.0",
+  "faultScenario": "esearch_invalid_schema",
+  "faultInjectionAcknowledged": true,
+  "faultInjectionMode": "one_shot",
+  "faultInjectionDeterministic": true
+}

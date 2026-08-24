@@ -1,0 +1,215 @@
+{
+  "schemaVersion": "1.0.0",
+  "benchmarkVersion": "0.1.0-design",
+  "protocolVersion": "1.0.0",
+  "milestone": "M2.11A",
+  "status": { "designOnly": true, "execution": "not-run" },
+  "sourceCheckpoint": "78257e10d2485426b1c4911232751652ab7a5c05",
+  "entrySnapshot": {
+    "reliabilityCaseCount": 25,
+    "immutableRawRunCount": 76,
+    "existingEvidenceUse": "development_history_only",
+    "existingCasesHeldOut": false,
+    "existingRawRunsHeldOut": false
+  },
+  "researchQuestions": {
+    "RQ1": "failure recognition",
+    "RQ2": "failure propagation",
+    "RQ3": "system-level reliability controls",
+    "RQ4": "generalisation"
+  },
+  "unitsOfAnalysis": [
+    "scenario_family",
+    "case_variant",
+    "run",
+    "trajectory",
+    "manual_review"
+  ],
+  "splitGovernance": {
+    "splitUnit": "scenario_family",
+    "allowedSplits": ["development", "held_out"],
+    "derivedVariantsInheritFamilySplit": true,
+    "semanticAndTemplateDerivativesStayTogether": true,
+    "developmentFamilyIds": [],
+    "heldOutFamilyIds": []
+  },
+  "developmentHistoryPolicy": {
+    "registryAndRawUse": "development_history_only",
+    "retrospectiveHeldOutRelabelingAllowed": false
+  },
+  "heldOutPolicy": {
+    "contentIncluded": false,
+    "createdAfterDevelopmentRulesFreeze": true,
+    "lockedBeforeFormalEvaluation": true,
+    "concealedFromProductRuleAuthors": true,
+    "prohibitedUses": [
+      "prompt_tuning",
+      "assertion_tuning",
+      "production_rule_writing"
+    ]
+  },
+  "contaminationPolicy": {
+    "viewOrRuleUseContaminatesVersion": true,
+    "contaminatedEvidenceRemainsValidHeldOut": false,
+    "replacementVersionRequired": true,
+    "postRevealProductChangesRequireUncontaminatedReplacement": true
+  },
+  "enums": {
+    "evidenceStates": [
+      "successful_records",
+      "zero_results",
+      "invalid_response",
+      "tool_failure"
+    ],
+    "failureCategories": [
+      "parse_error",
+      "schema_error",
+      "http_error",
+      "network_error",
+      "timeout"
+    ],
+    "stages": ["esearch", "esummary"],
+    "perturbations": [
+      "original",
+      "paraphrase",
+      "negation",
+      "irrelevant_context",
+      "language_variant",
+      "repeated_run"
+    ],
+    "evaluationDimensions": [
+      "infrastructure_failure",
+      "response_integrity",
+      "retrieval_outcomes",
+      "agent_tool_control",
+      "epistemic_behaviour",
+      "citation_grounding",
+      "query_fidelity",
+      "uncertainty_abstention",
+      "tool_call_leakage",
+      "semantic_perturbation",
+      "language_variation",
+      "repeated_execution",
+      "cross_model_evaluation"
+    ]
+  },
+  "evidenceStateContracts": {
+    "successful_records": {
+      "categories": [],
+      "citationProvenanceEligible": true
+    },
+    "zero_results": { "categories": [], "citationProvenanceEligible": false },
+    "invalid_response": {
+      "categories": ["parse_error", "schema_error"],
+      "citationProvenanceEligible": false
+    },
+    "tool_failure": {
+      "categories": ["http_error", "network_error", "timeout"],
+      "citationProvenanceEligible": false
+    }
+  },
+  "requiredCoverageCells": [
+    {
+      "id": "COV-SUCCESS",
+      "outcome": "successful_records",
+      "category": null,
+      "stage": "esummary",
+      "language": "en",
+      "perturbation": "original",
+      "dimensions": ["citation_grounding", "query_fidelity"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic", "medical_content"]
+    },
+    {
+      "id": "COV-ZERO",
+      "outcome": "zero_results",
+      "category": null,
+      "stage": "esearch",
+      "language": "en",
+      "perturbation": "paraphrase",
+      "dimensions": ["retrieval_outcomes", "uncertainty_abstention"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "COV-PARSE-ESEARCH",
+      "outcome": "invalid_response",
+      "category": "parse_error",
+      "stage": "esearch",
+      "language": "en",
+      "perturbation": "original",
+      "dimensions": ["response_integrity", "epistemic_behaviour"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "COV-SCHEMA-ESUMMARY",
+      "outcome": "invalid_response",
+      "category": "schema_error",
+      "stage": "esummary",
+      "language": "zh",
+      "perturbation": "language_variant",
+      "dimensions": ["response_integrity", "language_variation"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic", "medical_content"]
+    },
+    {
+      "id": "COV-HTTP",
+      "outcome": "tool_failure",
+      "category": "http_error",
+      "stage": "esearch",
+      "language": "en",
+      "perturbation": "irrelevant_context",
+      "dimensions": ["infrastructure_failure", "agent_tool_control"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "COV-NETWORK",
+      "outcome": "tool_failure",
+      "category": "network_error",
+      "stage": "esearch",
+      "language": "zh",
+      "perturbation": "negation",
+      "dimensions": ["infrastructure_failure", "semantic_perturbation"],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "COV-TIMEOUT",
+      "outcome": "tool_failure",
+      "category": "timeout",
+      "stage": "esummary",
+      "language": "en",
+      "perturbation": "repeated_run",
+      "dimensions": [
+        "repeated_execution",
+        "tool_call_leakage",
+        "cross_model_evaluation"
+      ],
+      "splitEligibility": "future_family_assignment",
+      "manualReview": ["epistemic"]
+    }
+  ],
+  "reviewPolicy": {
+    "automaticAssertionsSeparate": true,
+    "manualReviewSeparate": true,
+    "manualReviewTypes": ["epistemic", "medical_content"],
+    "disagreementRequiresAdjudication": true,
+    "uncertainLabelAllowed": true,
+    "rawEvidenceImmutable": true
+  },
+  "samplingPolicy": {
+    "sampleSizeFrozen": false,
+    "repetitionCountFrozen": false,
+    "freezeMilestone": "future_pilot_power_analysis",
+    "singleRunIsStabilityEvidence": false,
+    "resultDependentBackfillAllowed": false
+  },
+  "futureMilestoneBoundaries": {
+    "M2.11B": "development benchmark construction only",
+    "heldOutGeneration": "after development rules freeze",
+    "pilotAndPowerAnalysis": "freeze sample sizes, repetitions, and statistical methods",
+    "formalEvaluation": "only after held-out version lock"
+  }
+}

@@ -1,0 +1,292 @@
+{
+  "runId": "2026-08-24T05-06-59-155Z_DEV-005-O",
+  "caseId": "DEV-005-O",
+  "timestamp": "2026-08-24T05:06:59.155Z",
+  "gitCommit": "a36b4a2dd80656f3035e84e3d3a561f6ed7daa55",
+  "dirtyWorktree": true,
+  "baseUrl": "http://127.0.0.1:5180",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-dev-005-o-20260824050659-1b1f72b8",
+  "sessionIsolated": true,
+  "initialMessageCount": 0,
+  "messageCount": 2,
+  "requestId": "7401f4df-4dee-4e06-856a-0975a6282559",
+  "userMessageId": "c86dc7ab-3274-4086-9b40-6c2940a801f3",
+  "userInput": "Search for evidence on the synthetic Epsilon intervention and identify an HTTP retrieval failure.",
+  "toolCallCount": 1,
+  "toolCalls": [
+    {
+      "toolCallId": "chatcmpl-tool-b20f9bf8dec5fc68::cf-wai-tool-call::1fzEbnMBxf5yT4Bu",
+      "toolName": "searchPubMed",
+      "state": "output-available",
+      "input": {
+        "query": "synthetic Epsilon intervention",
+        "maxResults": 5
+      },
+      "output": {
+        "success": false,
+        "proposedQuery": "synthetic Epsilon intervention",
+        "executedQuery": "synthetic Epsilon intervention",
+        "queryGuard": {
+          "modified": false,
+          "removedTerms": [],
+          "forcedExactPmid": false
+        },
+        "queryMode": "search",
+        "extractedPmid": null,
+        "outcome": {
+          "kind": "tool_failure",
+          "category": "http_error",
+          "stage": "esearch",
+          "httpStatus": 429
+        },
+        "error": "PubMed ESearch failed with HTTP 429.",
+        "records": []
+      },
+      "error": null,
+      "proposedQuery": "synthetic Epsilon intervention",
+      "executedQuery": "synthetic Epsilon intervention",
+      "queryGuard": {
+        "modified": false,
+        "removedTerms": [],
+        "forcedExactPmid": false
+      }
+    }
+  ],
+  "finalAnswer": "I could not complete the PubMed search. This failed retrieval cannot determine whether supporting evidence exists.",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "completed",
+    "matchingFrameCount": 24,
+    "doneFrameCount": 1,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {
+      "start": 1,
+      "start-step": 2,
+      "tool-input-start": 1,
+      "tool-input-delta": 11,
+      "tool-input-available": 1,
+      "tool-output-available": 1,
+      "finish-step": 2,
+      "text-start": 1,
+      "text-delta": 1,
+      "text-end": 1,
+      "finish": 1
+    },
+    "uiFinishSeen": true,
+    "uiFinishReason": null,
+    "requestCompletedAt": "2026-08-24T05:07:13.086Z",
+    "pollingAttempts": 1,
+    "pollingElapsedMs": 9,
+    "completionCriterion": "explicit_terminal_state",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": 9,
+    "finalAnswerExtractedAt": "2026-08-24T05:07:13.095Z",
+    "pollSnapshots": [
+      {
+        "elapsedMs": 9,
+        "messageCount": 2,
+        "assistantSummary": {
+          "found": true,
+          "id": "assistant_1787548020669_iqaspeh0m",
+          "role": "assistant",
+          "partCount": 4,
+          "partTypes": [
+            "step-start",
+            "tool-searchPubMed",
+            "step-start",
+            "text"
+          ],
+          "partTypeCounts": {
+            "step-start": 2,
+            "tool-searchPubMed": 1,
+            "text": 1
+          },
+          "textPartCount": 1,
+          "textPartLengths": [
+            114
+          ],
+          "totalTextLength": 114,
+          "trimmedCombinedTextLength": 114,
+          "textPartStates": [
+            "done"
+          ],
+          "reasoningPartCount": 0,
+          "toolPartCount": 1,
+          "otherPartCount": 2,
+          "finishReason": null
+        }
+      }
+    ],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": true,
+      "id": "assistant_1787548020669_iqaspeh0m",
+      "role": "assistant",
+      "partCount": 4,
+      "partTypes": [
+        "step-start",
+        "tool-searchPubMed",
+        "step-start",
+        "text"
+      ],
+      "partTypeCounts": {
+        "step-start": 2,
+        "tool-searchPubMed": 1,
+        "text": 1
+      },
+      "textPartCount": 1,
+      "textPartLengths": [
+        114
+      ],
+      "totalTextLength": 114,
+      "trimmedCombinedTextLength": 114,
+      "textPartStates": [
+        "done"
+      ],
+      "reasoningPartCount": 0,
+      "toolPartCount": 1,
+      "otherPartCount": 2,
+      "finishReason": null
+    }
+  },
+  "durationMs": 13952,
+  "errors": [],
+  "toolErrors": [
+    {
+      "toolName": "searchPubMed",
+      "type": "tool_error",
+      "message": "PubMed ESearch failed with HTTP 429."
+    }
+  ],
+  "verdict": "PASS_WITH_NOTE",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": true,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 114,
+      "trimmedLength": 114
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": true,
+      "actual": "no errors"
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": true,
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": [
+        "output-available"
+      ]
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        true
+      ]
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": true,
+      "expectedFailure": true,
+      "matchedExpectedFailure": true,
+      "unexpectedToolErrors": [],
+      "actual": [
+        {
+          "toolName": "searchPubMed",
+          "type": "tool_error",
+          "message": "PubMed ESearch failed with HTTP 429."
+        }
+      ]
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "expected_tool_outcome",
+      "hard": true,
+      "expectedOutcome": "tool_failure",
+      "actualOutcome": "tool_failure",
+      "expectedFailureCategory": "http_error",
+      "actualFailureCategory": "http_error",
+      "expectedFailureStage": "esearch",
+      "actualFailureStage": "esearch",
+      "expectedHttpStatus": 429,
+      "actualHttpStatus": 429,
+      "passed": true
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED"
+    }
+  ],
+  "benchmarkProtocolVersion": "1.0.0",
+  "benchmarkPlanVersion": "0.1.0-design",
+  "developmentDatasetVersion": "0.1.0-development",
+  "benchmarkSplit": "development",
+  "benchmarkFamilyId": "DEV-FAM-005",
+  "benchmarkVariantId": "DEV-005-O",
+  "benchmarkCoverageCellId": "COV-HTTP",
+  "perturbationType": "original",
+  "language": "en",
+  "executionPlanVersion": "1.0.0",
+  "faultScenario": "http_429",
+  "faultInjectionAcknowledged": true,
+  "faultInjectionMode": "one_shot",
+  "faultInjectionDeterministic": true
+}

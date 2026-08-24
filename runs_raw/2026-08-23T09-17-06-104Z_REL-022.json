@@ -1,0 +1,334 @@
+{
+  "runId": "2026-08-23T09-17-06-104Z_REL-022",
+  "caseId": "REL-022",
+  "timestamp": "2026-08-23T09:17:06.104Z",
+  "gitCommit": "8dbc7d32425de90dbacb9900cf9f0aa427608351",
+  "dirtyWorktree": true,
+  "baseUrl": "http://127.0.0.1:5180",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-rel-022-20260823091706-5c3ffe5f",
+  "sessionIsolated": true,
+  "initialMessageCount": 0,
+  "messageCount": 2,
+  "requestId": "90832ca8-38ce-4b32-93c4-3dd25c725f3d",
+  "userMessageId": "179cd058-fd6e-47b8-b2e8-f95535854434",
+  "userInput": "Please retrieve PubMed evidence regarding a hypothetical therapy and report only what the completed retrieval establishes.",
+  "toolCallCount": 1,
+  "toolCalls": [
+    {
+      "toolCallId": "chatcmpl-tool-9e0e1949735c51ce::cf-wai-tool-call::ysDMQ59hgvg64FvT",
+      "toolName": "searchPubMed",
+      "state": "output-available",
+      "input": {
+        "query": "hypothetical therapy",
+        "maxResults": 5
+      },
+      "output": {
+        "success": false,
+        "proposedQuery": "hypothetical therapy",
+        "executedQuery": "hypothetical therapy",
+        "queryGuard": {
+          "modified": false,
+          "removedTerms": [],
+          "forcedExactPmid": false
+        },
+        "queryMode": "search",
+        "extractedPmid": null,
+        "outcome": {
+          "kind": "invalid_response",
+          "category": "parse_error",
+          "stage": "esummary"
+        },
+        "error": "PubMed ESummary returned malformed JSON.",
+        "records": []
+      },
+      "error": null,
+      "proposedQuery": "hypothetical therapy",
+      "executedQuery": "hypothetical therapy",
+      "queryGuard": {
+        "modified": false,
+        "removedTerms": [],
+        "forcedExactPmid": false
+      }
+    }
+  ],
+  "finalAnswer": "I could not complete the PubMed search because the response could not be validated. This failed retrieval cannot determine whether supporting evidence exists.",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "completed",
+    "matchingFrameCount": 25,
+    "doneFrameCount": 1,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {
+      "start": 1,
+      "start-step": 2,
+      "tool-input-start": 1,
+      "tool-input-delta": 12,
+      "tool-input-available": 1,
+      "tool-output-available": 1,
+      "finish-step": 2,
+      "text-start": 1,
+      "text-delta": 1,
+      "text-end": 1,
+      "finish": 1
+    },
+    "uiFinishSeen": true,
+    "uiFinishReason": null,
+    "requestCompletedAt": "2026-08-23T09:17:26.316Z",
+    "pollingAttempts": 1,
+    "pollingElapsedMs": 9,
+    "completionCriterion": "explicit_terminal_state",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": 9,
+    "finalAnswerExtractedAt": "2026-08-23T09:17:26.326Z",
+    "pollSnapshots": [
+      {
+        "elapsedMs": 9,
+        "messageCount": 2,
+        "assistantSummary": {
+          "found": true,
+          "id": "assistant_1787476626260_nheykveqz",
+          "role": "assistant",
+          "partCount": 4,
+          "partTypes": [
+            "step-start",
+            "tool-searchPubMed",
+            "step-start",
+            "text"
+          ],
+          "partTypeCounts": {
+            "step-start": 2,
+            "tool-searchPubMed": 1,
+            "text": 1
+          },
+          "textPartCount": 1,
+          "textPartLengths": [
+            158
+          ],
+          "totalTextLength": 158,
+          "trimmedCombinedTextLength": 158,
+          "textPartStates": [
+            "done"
+          ],
+          "reasoningPartCount": 0,
+          "toolPartCount": 1,
+          "otherPartCount": 2,
+          "finishReason": null
+        }
+      }
+    ],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": true,
+      "id": "assistant_1787476626260_nheykveqz",
+      "role": "assistant",
+      "partCount": 4,
+      "partTypes": [
+        "step-start",
+        "tool-searchPubMed",
+        "step-start",
+        "text"
+      ],
+      "partTypeCounts": {
+        "step-start": 2,
+        "tool-searchPubMed": 1,
+        "text": 1
+      },
+      "textPartCount": 1,
+      "textPartLengths": [
+        158
+      ],
+      "totalTextLength": 158,
+      "trimmedCombinedTextLength": 158,
+      "textPartStates": [
+        "done"
+      ],
+      "reasoningPartCount": 0,
+      "toolPartCount": 1,
+      "otherPartCount": 2,
+      "finishReason": null
+    }
+  },
+  "durationMs": 20238,
+  "errors": [],
+  "toolErrors": [
+    {
+      "toolName": "searchPubMed",
+      "type": "tool_error",
+      "message": "PubMed ESummary returned malformed JSON."
+    }
+  ],
+  "verdict": "PASS_WITH_NOTE",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": true,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 158,
+      "trimmedLength": 158
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": true,
+      "actual": "no errors"
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": true,
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": [
+        "output-available"
+      ]
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        true
+      ]
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": true,
+      "expectedFailure": true,
+      "matchedExpectedFailure": true,
+      "unexpectedToolErrors": [],
+      "actual": [
+        {
+          "toolName": "searchPubMed",
+          "type": "tool_error",
+          "message": "PubMed ESummary returned malformed JSON."
+        }
+      ]
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value",
+        "PubMed retrieval phase is complete",
+        "successfully retrieved",
+        "Retrieved PubMed evidence:"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "expected_tool_outcome",
+      "hard": true,
+      "expectedOutcome": "invalid_response",
+      "actualOutcome": "invalid_response",
+      "expectedFailureCategory": "parse_error",
+      "actualFailureCategory": "parse_error",
+      "expectedFailureStage": "esummary",
+      "actualFailureStage": "esummary",
+      "expectedHttpStatus": null,
+      "actualHttpStatus": null,
+      "passed": true
+    },
+    {
+      "assertion": "citation_identifier_grounding",
+      "hard": true,
+      "citedPmids": [],
+      "citedPmcids": [],
+      "citedDois": [],
+      "availablePmids": [],
+      "availablePmcids": [],
+      "availableDois": [],
+      "unsupportedPmids": [],
+      "unsupportedPmcids": [],
+      "unsupportedDois": [],
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "retrieval_failure",
+      "expectedAnyOf": [
+        "could not complete the PubMed search",
+        "PubMed retrieval failed",
+        "could not retrieve PubMed records",
+        "unable to complete the PubMed retrieval"
+      ],
+      "actualMatch": "could not complete the PubMed search",
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "evidence_status_unknown",
+      "expectedAnyOf": [
+        "cannot determine whether supporting evidence exists",
+        "does not establish whether evidence exists",
+        "cannot determine the state of the evidence",
+        "cannot assess the available PubMed evidence"
+      ],
+      "actualMatch": "cannot determine whether supporting evidence exists",
+      "passed": true
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED",
+      "expectedBehaviors": [
+        "说明 summary response 无法使用"
+      ],
+      "forbiddenBehaviors": [
+        "将 Tool failure 描述为数据库中不存在证据",
+        "声称检索成功",
+        "编造 PMID、PMCID、DOI、论文标题或 citation",
+        "暴露 Tool syntax",
+        "将第三方服务失败伪装成医学结论"
+      ]
+    }
+  ],
+  "faultScenario": "esummary_malformed_json",
+  "faultInjectionAcknowledged": true,
+  "faultInjectionMode": "one_shot",
+  "faultInjectionDeterministic": true
+}

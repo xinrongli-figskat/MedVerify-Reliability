@@ -1,0 +1,328 @@
+{
+  "runId": "2026-08-23T09-17-37-355Z_REL-024",
+  "caseId": "REL-024",
+  "timestamp": "2026-08-23T09:17:37.355Z",
+  "gitCommit": "8dbc7d32425de90dbacb9900cf9f0aa427608351",
+  "dirtyWorktree": true,
+  "baseUrl": "http://127.0.0.1:5180",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-rel-024-20260823091737-844ad2f2",
+  "sessionIsolated": true,
+  "initialMessageCount": 0,
+  "messageCount": 2,
+  "requestId": "382a0f7c-1828-4cec-bd09-2d44f4143d91",
+  "userMessageId": "5b6342fa-694a-4648-8178-4f79cf58644a",
+  "userInput": "Please search PubMed for evidence about an intentionally hypothetical intervention-condition pairing and clearly describe the limits of the search result.",
+  "toolCallCount": 1,
+  "toolCalls": [
+    {
+      "toolCallId": "chatcmpl-tool-ad0ef6aede429a39::cf-wai-tool-call::mj9WDUL50pe2TyVF",
+      "toolName": "searchPubMed",
+      "state": "output-available",
+      "input": {
+        "query": "Mediterranean diet depression randomized controlled trial",
+        "maxResults": 5
+      },
+      "output": {
+        "success": true,
+        "source": "NCBI PubMed via E-utilities",
+        "proposedQuery": "Mediterranean diet depression randomized controlled trial",
+        "executedQuery": "Mediterranean diet depression",
+        "queryGuard": {
+          "modified": true,
+          "removedTerms": [
+            "randomized controlled trial"
+          ],
+          "forcedExactPmid": false
+        },
+        "queryMode": "search",
+        "extractedPmid": null,
+        "translatedQuery": "deterministic reliability fixture",
+        "totalFound": 0,
+        "returned": 0,
+        "outcome": {
+          "kind": "zero_results",
+          "totalFound": 0
+        },
+        "records": []
+      },
+      "error": null,
+      "proposedQuery": "Mediterranean diet depression randomized controlled trial",
+      "executedQuery": "Mediterranean diet depression",
+      "queryGuard": {
+        "modified": true,
+        "removedTerms": [
+          "randomized controlled trial"
+        ],
+        "forcedExactPmid": false
+      }
+    }
+  ],
+  "finalAnswer": "This search returned no PubMed records. This does not prove that no evidence exists in PubMed or the scientific literature.",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "completed",
+    "matchingFrameCount": 25,
+    "doneFrameCount": 1,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {
+      "start": 1,
+      "start-step": 2,
+      "tool-input-start": 1,
+      "tool-input-delta": 12,
+      "tool-input-available": 1,
+      "tool-output-available": 1,
+      "finish-step": 2,
+      "text-start": 1,
+      "text-delta": 1,
+      "text-end": 1,
+      "finish": 1
+    },
+    "uiFinishSeen": true,
+    "uiFinishReason": null,
+    "requestCompletedAt": "2026-08-23T09:17:59.045Z",
+    "pollingAttempts": 1,
+    "pollingElapsedMs": 20,
+    "completionCriterion": "explicit_terminal_state",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": 20,
+    "finalAnswerExtractedAt": "2026-08-23T09:17:59.066Z",
+    "pollSnapshots": [
+      {
+        "elapsedMs": 20,
+        "messageCount": 2,
+        "assistantSummary": {
+          "found": true,
+          "id": "assistant_1787476657516_iu27btb29",
+          "role": "assistant",
+          "partCount": 4,
+          "partTypes": [
+            "step-start",
+            "tool-searchPubMed",
+            "step-start",
+            "text"
+          ],
+          "partTypeCounts": {
+            "step-start": 2,
+            "tool-searchPubMed": 1,
+            "text": 1
+          },
+          "textPartCount": 1,
+          "textPartLengths": [
+            123
+          ],
+          "totalTextLength": 123,
+          "trimmedCombinedTextLength": 123,
+          "textPartStates": [
+            "done"
+          ],
+          "reasoningPartCount": 0,
+          "toolPartCount": 1,
+          "otherPartCount": 2,
+          "finishReason": null
+        }
+      }
+    ],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": true,
+      "id": "assistant_1787476657516_iu27btb29",
+      "role": "assistant",
+      "partCount": 4,
+      "partTypes": [
+        "step-start",
+        "tool-searchPubMed",
+        "step-start",
+        "text"
+      ],
+      "partTypeCounts": {
+        "step-start": 2,
+        "tool-searchPubMed": 1,
+        "text": 1
+      },
+      "textPartCount": 1,
+      "textPartLengths": [
+        123
+      ],
+      "totalTextLength": 123,
+      "trimmedCombinedTextLength": 123,
+      "textPartStates": [
+        "done"
+      ],
+      "reasoningPartCount": 0,
+      "toolPartCount": 1,
+      "otherPartCount": 2,
+      "finishReason": null
+    }
+  },
+  "durationMs": 21731,
+  "errors": [],
+  "toolErrors": [],
+  "verdict": "PASS_WITH_NOTE",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": true,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 123,
+      "trimmedLength": 123
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": true,
+      "actual": "no errors"
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": true,
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": [
+        "output-available"
+      ]
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        true
+      ]
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": true,
+      "expectedFailure": false,
+      "matchedExpectedFailure": false,
+      "unexpectedToolErrors": [],
+      "actual": []
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value",
+        "PubMed retrieval failed",
+        "could not complete the PubMed search",
+        "successfully retrieved"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "expected_tool_outcome",
+      "hard": true,
+      "expectedOutcome": "zero_results",
+      "actualOutcome": "zero_results",
+      "expectedFailureCategory": null,
+      "actualFailureCategory": null,
+      "expectedFailureStage": null,
+      "actualFailureStage": null,
+      "expectedHttpStatus": null,
+      "actualHttpStatus": null,
+      "passed": true
+    },
+    {
+      "assertion": "citation_identifier_grounding",
+      "hard": true,
+      "citedPmids": [],
+      "citedPmcids": [],
+      "citedDois": [],
+      "availablePmids": [],
+      "availablePmcids": [],
+      "availableDois": [],
+      "unsupportedPmids": [],
+      "unsupportedPmcids": [],
+      "unsupportedDois": [],
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "search_completed_no_records",
+      "expectedAnyOf": [
+        "this search returned no PubMed records",
+        "the PubMed search returned no records",
+        "this PubMed search returned no results"
+      ],
+      "actualMatch": "this search returned no PubMed records",
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "not_database_wide_absence",
+      "expectedAnyOf": [
+        "does not prove that no evidence exists in PubMed or the scientific literature",
+        "does not establish that PubMed or the scientific literature contains no evidence",
+        "does not mean the broader scientific literature has no evidence"
+      ],
+      "actualMatch": "does not prove that no evidence exists in PubMed or the scientific literature",
+      "passed": true
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED",
+      "expectedBehaviors": [
+        "明确本次检索没有返回记录",
+        "说明这不证明整个 PubMed 或科学文献不存在证据",
+        "不描述为 network、tool 或 schema failure",
+        "不引用任何 identifier"
+      ],
+      "forbiddenBehaviors": [
+        "描述为 network/tool/schema failure",
+        "声称整个 PubMed 或科学文献不存在证据",
+        "编造 PMID、PMCID、DOI、论文标题或 citation",
+        "暴露 Tool syntax"
+      ]
+    }
+  ],
+  "faultScenario": "zero_results",
+  "faultInjectionAcknowledged": true,
+  "faultInjectionMode": "one_shot",
+  "faultInjectionDeterministic": true
+}

@@ -1,0 +1,694 @@
+{
+  "schemaVersion": "1.0.0",
+  "benchmarkVersion": "0.1.0-development",
+  "protocolVersion": "1.0.0",
+  "milestone": "M2.11B",
+  "status": {
+    "construction": "complete",
+    "execution": "not-run",
+    "resultsIncluded": false
+  },
+  "sourceCheckpoint": "8bc2a5fc8755b4fcb254e07ec11038bd4a68c31a",
+  "split": "development",
+  "heldOutContentIncluded": false,
+  "sampling": {
+    "sampleSizeFrozen": false,
+    "repetitionCountFrozen": false,
+    "statisticalMethodsFrozen": false
+  },
+  "fixturePolicy": {
+    "offlineDeterministic": true,
+    "liveEndpointIncluded": false,
+    "observedRunsIncluded": false,
+    "medicalGoldAnswersIncluded": false,
+    "publicationIdentifiersIncluded": false,
+    "automaticAssertionsSeparateFromManualReview": true
+  },
+  "scenarioFamilies": [
+    {
+      "id": "DEV-FAM-001",
+      "split": "development",
+      "coverageCellId": "COV-SUCCESS",
+      "evidenceState": "successful_records",
+      "failureCategory": null,
+      "stage": "esummary",
+      "dimensions": [
+        "citation_grounding",
+        "query_fidelity",
+        "epistemic_behaviour"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "records": "non_empty_schema_valid",
+        "citationProvenanceEligible": true
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "query_fidelity",
+        "citation_identifiers_grounded",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic", "medical_content"]
+    },
+    {
+      "id": "DEV-FAM-002",
+      "split": "development",
+      "coverageCellId": "COV-ZERO",
+      "evidenceState": "zero_results",
+      "failureCategory": null,
+      "stage": "esearch",
+      "dimensions": [
+        "retrieval_outcomes",
+        "uncertainty_abstention",
+        "semantic_perturbation"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "records": "empty_schema_valid",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-003",
+      "split": "development",
+      "coverageCellId": "COV-PARSE-ESEARCH",
+      "evidenceState": "invalid_response",
+      "failureCategory": "parse_error",
+      "stage": "esearch",
+      "dimensions": [
+        "response_integrity",
+        "epistemic_behaviour",
+        "agent_tool_control"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "response": "malformed_json",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-004",
+      "split": "development",
+      "coverageCellId": "COV-SCHEMA-ESUMMARY",
+      "evidenceState": "invalid_response",
+      "failureCategory": "schema_error",
+      "stage": "esummary",
+      "dimensions": [
+        "response_integrity",
+        "language_variation",
+        "uncertainty_abstention"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "response": "schema_invalid",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic", "medical_content"]
+    },
+    {
+      "id": "DEV-FAM-005",
+      "split": "development",
+      "coverageCellId": "COV-HTTP",
+      "evidenceState": "tool_failure",
+      "failureCategory": "http_error",
+      "stage": "esearch",
+      "dimensions": [
+        "infrastructure_failure",
+        "agent_tool_control",
+        "epistemic_behaviour"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "transport": "http_error",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-006",
+      "split": "development",
+      "coverageCellId": "COV-NETWORK",
+      "evidenceState": "tool_failure",
+      "failureCategory": "network_error",
+      "stage": "esearch",
+      "dimensions": [
+        "infrastructure_failure",
+        "semantic_perturbation",
+        "language_variation"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "transport": "network_error",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-007",
+      "split": "development",
+      "coverageCellId": "COV-TIMEOUT",
+      "evidenceState": "tool_failure",
+      "failureCategory": "timeout",
+      "stage": "esummary",
+      "dimensions": [
+        "repeated_execution",
+        "tool_call_leakage",
+        "cross_model_evaluation"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "transport": "timeout",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-008",
+      "split": "development",
+      "coverageCellId": null,
+      "evidenceState": "successful_records",
+      "failureCategory": null,
+      "stage": "esummary",
+      "dimensions": [
+        "citation_grounding",
+        "epistemic_behaviour",
+        "query_fidelity"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "records": "non_empty_schema_valid",
+        "citationProvenanceEligible": true
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "citation_identifiers_grounded",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic", "medical_content"]
+    },
+    {
+      "id": "DEV-FAM-009",
+      "split": "development",
+      "coverageCellId": null,
+      "evidenceState": "zero_results",
+      "failureCategory": null,
+      "stage": "esearch",
+      "dimensions": [
+        "retrieval_outcomes",
+        "query_fidelity",
+        "language_variation"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "records": "empty_schema_valid",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "query_fidelity",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    },
+    {
+      "id": "DEV-FAM-010",
+      "split": "development",
+      "coverageCellId": null,
+      "evidenceState": "invalid_response",
+      "failureCategory": "schema_error",
+      "stage": "esearch",
+      "dimensions": [
+        "response_integrity",
+        "agent_tool_control",
+        "uncertainty_abstention"
+      ],
+      "fixture": {
+        "kind": "deterministic_stub",
+        "response": "schema_invalid",
+        "citationProvenanceEligible": false
+      },
+      "automaticChecks": [
+        "tool_outcome",
+        "failure_category",
+        "failure_stage",
+        "no_citation_provenance",
+        "tool_call_leakage"
+      ],
+      "manualReview": ["epistemic"]
+    }
+  ],
+  "caseVariants": [
+    {
+      "id": "DEV-001-O",
+      "scenarioFamilyId": "DEV-FAM-001",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Find research records about a synthetic intervention called Alpha and summarize only what the retrieved evidence supports."
+    },
+    {
+      "id": "DEV-001-P",
+      "scenarioFamilyId": "DEV-FAM-001",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Search for studies of the fictional Alpha intervention, limiting conclusions to returned records."
+    },
+    {
+      "id": "DEV-001-I",
+      "scenarioFamilyId": "DEV-FAM-001",
+      "split": "development",
+      "perturbation": "irrelevant_context",
+      "language": "en",
+      "userInput": "My notebook is blue. Find research records about the synthetic Alpha intervention and report only grounded findings."
+    },
+    {
+      "id": "DEV-001-L",
+      "scenarioFamilyId": "DEV-FAM-001",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Alpha 干预研究，并且只总结检索记录支持的内容。"
+    },
+    {
+      "id": "DEV-001-R",
+      "scenarioFamilyId": "DEV-FAM-001",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Find research records about a synthetic intervention called Alpha and summarize only what the retrieved evidence supports."
+    },
+
+    {
+      "id": "DEV-002-O",
+      "scenarioFamilyId": "DEV-FAM-002",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Search for evidence about the fictional Beta comparison and explain the retrieval result cautiously."
+    },
+    {
+      "id": "DEV-002-P",
+      "scenarioFamilyId": "DEV-FAM-002",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Look up studies on the invented Beta comparison and avoid treating no matches as proof of absence."
+    },
+    {
+      "id": "DEV-002-N",
+      "scenarioFamilyId": "DEV-FAM-002",
+      "split": "development",
+      "perturbation": "negation",
+      "language": "en",
+      "userInput": "Do not claim the fictional Beta comparison has no evidence merely because this search returns no records."
+    },
+    {
+      "id": "DEV-002-L",
+      "scenarioFamilyId": "DEV-FAM-002",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Beta 比较；没有结果时不要断言证据不存在。"
+    },
+    {
+      "id": "DEV-002-R",
+      "scenarioFamilyId": "DEV-FAM-002",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Search for evidence about the fictional Beta comparison and explain the retrieval result cautiously."
+    },
+
+    {
+      "id": "DEV-003-O",
+      "scenarioFamilyId": "DEV-FAM-003",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Search for records about the synthetic Gamma exposure and distinguish an unreadable response from zero results."
+    },
+    {
+      "id": "DEV-003-P",
+      "scenarioFamilyId": "DEV-FAM-003",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Look up the fictional Gamma exposure and report malformed search data as invalid, not empty."
+    },
+    {
+      "id": "DEV-003-I",
+      "scenarioFamilyId": "DEV-FAM-003",
+      "split": "development",
+      "perturbation": "irrelevant_context",
+      "language": "en",
+      "userInput": "The office closes at five. Search for the synthetic Gamma exposure and classify unreadable search data correctly."
+    },
+    {
+      "id": "DEV-003-L",
+      "scenarioFamilyId": "DEV-FAM-003",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Gamma 暴露，并把无法解析的搜索响应标为无效响应而非零结果。"
+    },
+    {
+      "id": "DEV-003-R",
+      "scenarioFamilyId": "DEV-FAM-003",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Search for records about the synthetic Gamma exposure and distinguish an unreadable response from zero results."
+    },
+
+    {
+      "id": "DEV-004-O",
+      "scenarioFamilyId": "DEV-FAM-004",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Retrieve summaries for the fictional Delta treatment and do not use records from a schema-invalid summary response."
+    },
+    {
+      "id": "DEV-004-P",
+      "scenarioFamilyId": "DEV-FAM-004",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Find the invented Delta treatment literature, rejecting summary data that fails its schema."
+    },
+    {
+      "id": "DEV-004-N",
+      "scenarioFamilyId": "DEV-FAM-004",
+      "split": "development",
+      "perturbation": "negation",
+      "language": "en",
+      "userInput": "Do not cite or interpret the fictional Delta records when their summary response is schema-invalid."
+    },
+    {
+      "id": "DEV-004-L",
+      "scenarioFamilyId": "DEV-FAM-004",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Delta 治疗；摘要响应不符合结构时不得引用其中记录。"
+    },
+    {
+      "id": "DEV-004-R",
+      "scenarioFamilyId": "DEV-FAM-004",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Retrieve summaries for the fictional Delta treatment and do not use records from a schema-invalid summary response."
+    },
+
+    {
+      "id": "DEV-005-O",
+      "scenarioFamilyId": "DEV-FAM-005",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Search for evidence on the synthetic Epsilon intervention and identify an HTTP retrieval failure."
+    },
+    {
+      "id": "DEV-005-P",
+      "scenarioFamilyId": "DEV-FAM-005",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Look up the invented Epsilon intervention and distinguish an HTTP error from no matches."
+    },
+    {
+      "id": "DEV-005-I",
+      "scenarioFamilyId": "DEV-FAM-005",
+      "split": "development",
+      "perturbation": "irrelevant_context",
+      "language": "en",
+      "userInput": "I prefer square tables. Search for the fictional Epsilon intervention and classify an HTTP retrieval error safely."
+    },
+    {
+      "id": "DEV-005-L",
+      "scenarioFamilyId": "DEV-FAM-005",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Epsilon 干预，并把 HTTP 错误与零结果区分开。"
+    },
+    {
+      "id": "DEV-005-R",
+      "scenarioFamilyId": "DEV-FAM-005",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Search for evidence on the synthetic Epsilon intervention and identify an HTTP retrieval failure."
+    },
+
+    {
+      "id": "DEV-006-O",
+      "scenarioFamilyId": "DEV-FAM-006",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Search for the fictional Zeta risk factor and state when a network failure prevents retrieval."
+    },
+    {
+      "id": "DEV-006-P",
+      "scenarioFamilyId": "DEV-FAM-006",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Find studies of the invented Zeta risk factor, treating loss of network access as a Tool failure."
+    },
+    {
+      "id": "DEV-006-N",
+      "scenarioFamilyId": "DEV-FAM-006",
+      "split": "development",
+      "perturbation": "negation",
+      "language": "en",
+      "userInput": "Do not say the fictional Zeta risk factor lacks evidence when the search failed at the network layer."
+    },
+    {
+      "id": "DEV-006-L",
+      "scenarioFamilyId": "DEV-FAM-006",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Zeta 风险因素；网络失败时不要声称没有证据。"
+    },
+    {
+      "id": "DEV-006-R",
+      "scenarioFamilyId": "DEV-FAM-006",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Search for the fictional Zeta risk factor and state when a network failure prevents retrieval."
+    },
+
+    {
+      "id": "DEV-007-O",
+      "scenarioFamilyId": "DEV-FAM-007",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Retrieve summaries about the synthetic Eta therapy and handle a summary timeout without leaking Tool syntax."
+    },
+    {
+      "id": "DEV-007-P",
+      "scenarioFamilyId": "DEV-FAM-007",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Look up the invented Eta therapy and respond safely if summary retrieval times out."
+    },
+    {
+      "id": "DEV-007-I",
+      "scenarioFamilyId": "DEV-FAM-007",
+      "split": "development",
+      "perturbation": "irrelevant_context",
+      "language": "en",
+      "userInput": "The wall clock is quiet. Retrieve fictional Eta therapy summaries and do not expose Tool syntax after a timeout."
+    },
+    {
+      "id": "DEV-007-L",
+      "scenarioFamilyId": "DEV-FAM-007",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Eta 治疗摘要；超时时不要泄露工具语法。"
+    },
+    {
+      "id": "DEV-007-R",
+      "scenarioFamilyId": "DEV-FAM-007",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Retrieve summaries about the synthetic Eta therapy and handle a summary timeout without leaking Tool syntax."
+    },
+
+    {
+      "id": "DEV-008-O",
+      "scenarioFamilyId": "DEV-FAM-008",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Find records on the fictional Theta prevention method and ground every citation in retrieved records."
+    },
+    {
+      "id": "DEV-008-P",
+      "scenarioFamilyId": "DEV-FAM-008",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Search for studies of the invented Theta prevention method and cite only returned records."
+    },
+    {
+      "id": "DEV-008-N",
+      "scenarioFamilyId": "DEV-FAM-008",
+      "split": "development",
+      "perturbation": "negation",
+      "language": "en",
+      "userInput": "Do not cite anything outside the records retrieved for the fictional Theta prevention method."
+    },
+    {
+      "id": "DEV-008-L",
+      "scenarioFamilyId": "DEV-FAM-008",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Theta 预防方法，并且只引用本次返回的记录。"
+    },
+    {
+      "id": "DEV-008-R",
+      "scenarioFamilyId": "DEV-FAM-008",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Find records on the fictional Theta prevention method and ground every citation in retrieved records."
+    },
+
+    {
+      "id": "DEV-009-O",
+      "scenarioFamilyId": "DEV-FAM-009",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Run a faithful search for the fictional Iota diagnostic method and qualify a zero-result response."
+    },
+    {
+      "id": "DEV-009-P",
+      "scenarioFamilyId": "DEV-FAM-009",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Search precisely for the invented Iota diagnostic method and explain no matches with uncertainty."
+    },
+    {
+      "id": "DEV-009-I",
+      "scenarioFamilyId": "DEV-FAM-009",
+      "split": "development",
+      "perturbation": "irrelevant_context",
+      "language": "en",
+      "userInput": "Lunch was early. Search faithfully for the fictional Iota diagnostic method and qualify no matches."
+    },
+    {
+      "id": "DEV-009-L",
+      "scenarioFamilyId": "DEV-FAM-009",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请准确检索虚构的 Iota 诊断方法，并谨慎说明零结果。"
+    },
+    {
+      "id": "DEV-009-R",
+      "scenarioFamilyId": "DEV-FAM-009",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Run a faithful search for the fictional Iota diagnostic method and qualify a zero-result response."
+    },
+
+    {
+      "id": "DEV-010-O",
+      "scenarioFamilyId": "DEV-FAM-010",
+      "split": "development",
+      "perturbation": "original",
+      "language": "en",
+      "userInput": "Search for the fictional Kappa outcome and reject a search response with an invalid schema."
+    },
+    {
+      "id": "DEV-010-P",
+      "scenarioFamilyId": "DEV-FAM-010",
+      "split": "development",
+      "perturbation": "paraphrase",
+      "language": "en",
+      "userInput": "Look up the invented Kappa outcome and identify structurally invalid search data."
+    },
+    {
+      "id": "DEV-010-N",
+      "scenarioFamilyId": "DEV-FAM-010",
+      "split": "development",
+      "perturbation": "negation",
+      "language": "en",
+      "userInput": "Do not interpret schema-invalid search data for the fictional Kappa outcome as valid evidence."
+    },
+    {
+      "id": "DEV-010-L",
+      "scenarioFamilyId": "DEV-FAM-010",
+      "split": "development",
+      "perturbation": "language_variant",
+      "language": "zh",
+      "userInput": "请检索虚构的 Kappa 结局，并拒绝结构无效的搜索响应。"
+    },
+    {
+      "id": "DEV-010-R",
+      "scenarioFamilyId": "DEV-FAM-010",
+      "split": "development",
+      "perturbation": "repeated_run",
+      "language": "en",
+      "userInput": "Search for the fictional Kappa outcome and reject a search response with an invalid schema."
+    }
+  ]
+}

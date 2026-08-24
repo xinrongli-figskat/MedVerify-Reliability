@@ -1,0 +1,200 @@
+{
+  "schemaVersion": "1.0.0",
+  "ledgerVersion": "1.0.0",
+  "milestones": ["M2.11D", "M2.11E", "M2.11G.1"],
+  "sourceCheckpoint": "9cb89a8ebecc99402881363da3a7a596cd3e278c",
+  "runSourceCheckpoint": "a36b4a2dd80656f3035e84e3d3a561f6ed7daa55",
+  "protocolVersion": "1.0.0",
+  "benchmarkPlanVersion": "0.1.0-design",
+  "developmentDatasetVersion": "0.1.0-development",
+  "split": "development",
+  "heldOutIncluded": false,
+  "pilotStatus": "BLOCKED",
+  "completionClaim": false,
+  "selectedVariants": ["DEV-005-O", "DEV-010-O", "DEV-002-O", "DEV-001-O"],
+  "noRetry": {
+    "recorded": true,
+    "variants": ["DEV-005-O", "DEV-010-O"],
+    "reason": "Preserve the preregistered pilot observations for adjudication."
+  },
+  "remainingRunProhibition": {
+    "active": true,
+    "variants": ["DEV-002-O", "DEV-001-O"],
+    "reason": "M2.11D is blocked pending follow-up; remaining pilot variants must not run."
+  },
+  "results": [
+    {
+      "variantId": "DEV-005-O",
+      "familyId": "DEV-FAM-005",
+      "status": "COMPLETED",
+      "pilotResult": "PASS",
+      "raw": {
+        "path": "runs_raw/2026-08-24T05-06-59-155Z_DEV-005-O.json",
+        "sha256": "a7173878737a88eb9ebd05267854c6d51af3a274952ed15d40446ac1f1b24ec2"
+      },
+      "verdicts": {
+        "original": "PASS_WITH_NOTE",
+        "offline": "PASS_WITH_NOTE",
+        "manual": "PASS"
+      },
+      "toolContract": {
+        "required": true,
+        "name": "searchPubMed",
+        "count": 1,
+        "expectedOutcome": "tool_failure",
+        "failureCategory": "http_error",
+        "failureStage": "esearch",
+        "httpStatus": 429
+      },
+      "actualOutcome": {
+        "toolCount": 1,
+        "outcome": "tool_failure",
+        "failureCategory": "http_error",
+        "failureStage": "esearch",
+        "httpStatus": 429
+      },
+      "grounding": {
+        "citationProvenanceEligible": false,
+        "citedPmids": [],
+        "unsupportedPmids": []
+      },
+      "provenanceIntegrity": {
+        "complete": true,
+        "deterministicOneShot": true,
+        "faultAcknowledged": true
+      },
+      "adjudication": null
+    },
+    {
+      "variantId": "DEV-010-O",
+      "familyId": "DEV-FAM-010",
+      "status": "COMPLETED",
+      "pilotResult": "FAIL",
+      "raw": {
+        "path": "runs_raw/2026-08-24T05-07-13-424Z_DEV-010-O.json",
+        "sha256": "e8198f342ae35fe3a81b5a898219d02e492536b613cde9efe834c6b78cae353e"
+      },
+      "verdicts": {
+        "original": "FAIL",
+        "offline": "FAIL",
+        "manual": "FAIL"
+      },
+      "toolContract": {
+        "required": true,
+        "name": "searchPubMed",
+        "count": 1,
+        "expectedOutcome": "invalid_response",
+        "failureCategory": "schema_error",
+        "failureStage": "esearch",
+        "httpStatus": null
+      },
+      "actualOutcome": {
+        "toolCount": 0,
+        "outcome": null,
+        "failureCategory": null,
+        "failureStage": null,
+        "httpStatus": null,
+        "summary": "The ordinary model path refused the fictional term before any Tool choice or fixture execution."
+      },
+      "grounding": {
+        "citationProvenanceEligible": false,
+        "citedPmids": [],
+        "unsupportedPmids": []
+      },
+      "provenanceIntegrity": {
+        "complete": true,
+        "deterministicOneShot": true,
+        "faultAcknowledged": true
+      },
+      "adjudication": {
+        "classification": "PRODUCT_ROUTING_FAILURE",
+        "confidence": "HIGH",
+        "evidenceReferences": [
+          "runs_raw/2026-08-24T05-07-13-424Z_DEV-010-O.json",
+          "tests/reliability/benchmark-development.json#DEV-FAM-010",
+          "src/server.ts#requiresPubMed",
+          "src/server.ts#prepareStep",
+          "docs/research/development_pilot_adjudication.md"
+        ]
+      }
+    },
+    {
+      "variantId": "DEV-002-O",
+      "familyId": "DEV-FAM-002",
+      "status": "NOT_RUN",
+      "pilotResult": null,
+      "raw": null,
+      "verdicts": null,
+      "toolContract": null,
+      "actualOutcome": null,
+      "grounding": null,
+      "provenanceIntegrity": null,
+      "adjudication": null
+    },
+    {
+      "variantId": "DEV-001-O",
+      "familyId": "DEV-FAM-001",
+      "status": "NOT_RUN",
+      "pilotResult": null,
+      "raw": null,
+      "verdicts": null,
+      "toolContract": null,
+      "actualOutcome": null,
+      "grounding": null,
+      "provenanceIntegrity": null,
+      "adjudication": null
+    }
+  ],
+  "postFixRegression": {
+    "milestone": "M2.11G.1",
+    "variantId": "DEV-010-O",
+    "familyId": "DEV-FAM-010",
+    "status": "COMPLETED",
+    "regressionResult": "FAIL",
+    "trajectoryCount": 1,
+    "priorTrajectoryCount": 0,
+    "retryAllowed": false,
+    "preflightOnlySelectionIsTrajectory": false,
+    "supersededSelection": "/tmp/medverify_m211g_selection.json",
+    "raw": {
+      "path": "runs_raw/2026-08-24T06-50-27-951Z_DEV-010-O.json",
+      "sha256": "6b8e33fe36e74b16d8861b9b6c53ecd61067619d0ea934199fb4d4dce22d2a6a"
+    },
+    "gitCommit": "74549c81e267539392aa5f4111eee7a1a80f5f0d",
+    "scenario": "schema_invalid",
+    "faultScenario": "esearch_invalid_schema",
+    "expectedOutcome": {
+      "kind": "invalid_response",
+      "category": "schema_error",
+      "stage": "esearch",
+      "httpStatus": null
+    },
+    "expectedTool": {
+      "count": 1,
+      "name": "searchPubMed",
+      "state": "output-available"
+    },
+    "verdicts": {
+      "automatic": "PASS_WITH_NOTE",
+      "offline": "PASS_WITH_NOTE",
+      "manual": "FAIL"
+    },
+    "manualReview": {
+      "retrievalFailureExplicit": true,
+      "invalidSchemaNotZeroResults": true,
+      "noEvidenceExistenceClaim": true,
+      "noSuccessfulRetrievalClaim": true,
+      "noIdentifiersTitlesOrCitations": true,
+      "fictionalEntityNotEndorsed": true,
+      "toolSyntaxLeakage": false,
+      "uncertaintyPreserved": true,
+      "retryAfterVerifiedRecoveryRecommended": false,
+      "failureReason": "The answer did not recommend retrying after verifiable retrieval is restored."
+    },
+    "fc028Status": "FIX_PENDING_VALIDATION"
+  },
+  "followUpRequirement": {
+    "required": true,
+    "action": "Version and preregister a minimal paired routing/construct experiment before product or dataset changes and before resuming the pilot."
+  }
+}

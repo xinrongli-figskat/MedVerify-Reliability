@@ -1,0 +1,337 @@
+{
+  "runId": "2026-08-23T09-15-12-061Z_REL-016",
+  "caseId": "REL-016",
+  "timestamp": "2026-08-23T09:15:12.061Z",
+  "gitCommit": "8dbc7d32425de90dbacb9900cf9f0aa427608351",
+  "dirtyWorktree": false,
+  "baseUrl": "http://127.0.0.1:5180",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-rel-016-20260823091512-4f760364",
+  "sessionIsolated": true,
+  "initialMessageCount": 0,
+  "messageCount": 2,
+  "requestId": "d58c5bc5-ae5a-47c4-abb8-9de2a38b63fb",
+  "userMessageId": "af9df2b1-5215-4efc-a843-8f3567b9a04c",
+  "userInput": "Please check PubMed for evidence about whether a hypothetical intervention improves a hypothetical condition, and report the evidence status cautiously.",
+  "toolCallCount": 1,
+  "toolCalls": [
+    {
+      "toolCallId": "chatcmpl-tool-add0acfb5d4e3618::cf-wai-tool-call::ehx1Yi0mEtJZf2do",
+      "toolName": "searchPubMed",
+      "state": "output-available",
+      "input": {
+        "query": "protein generate as hydro anatomic biology no icon mechanism string",
+        "maxResults": 5
+      },
+      "output": {
+        "success": false,
+        "proposedQuery": "protein generate as hydro anatomic biology no icon mechanism string",
+        "executedQuery": "protein generate as hydro anatomic biology no icon mechanism string",
+        "queryGuard": {
+          "modified": false,
+          "removedTerms": [],
+          "forcedExactPmid": false
+        },
+        "queryMode": "search",
+        "extractedPmid": null,
+        "outcome": {
+          "kind": "tool_failure",
+          "category": "http_error",
+          "stage": "esearch",
+          "httpStatus": 429
+        },
+        "error": "PubMed ESearch failed with HTTP 429.",
+        "records": []
+      },
+      "error": null,
+      "proposedQuery": "protein generate as hydro anatomic biology no icon mechanism string",
+      "executedQuery": "protein generate as hydro anatomic biology no icon mechanism string",
+      "queryGuard": {
+        "modified": false,
+        "removedTerms": [],
+        "forcedExactPmid": false
+      }
+    }
+  ],
+  "finalAnswer": "I could not complete the PubMed search. This failed retrieval cannot determine whether supporting evidence exists.",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "completed",
+    "matchingFrameCount": 30,
+    "doneFrameCount": 1,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {
+      "start": 1,
+      "start-step": 2,
+      "tool-input-start": 1,
+      "tool-input-delta": 17,
+      "tool-input-available": 1,
+      "tool-output-available": 1,
+      "finish-step": 2,
+      "text-start": 1,
+      "text-delta": 1,
+      "text-end": 1,
+      "finish": 1
+    },
+    "uiFinishSeen": true,
+    "uiFinishReason": null,
+    "requestCompletedAt": "2026-08-23T09:15:25.628Z",
+    "pollingAttempts": 1,
+    "pollingElapsedMs": 44,
+    "completionCriterion": "explicit_terminal_state",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": 42,
+    "finalAnswerExtractedAt": "2026-08-23T09:15:25.672Z",
+    "pollSnapshots": [
+      {
+        "elapsedMs": 42,
+        "messageCount": 2,
+        "assistantSummary": {
+          "found": true,
+          "id": "assistant_1787476512509_6q4kk1oj9",
+          "role": "assistant",
+          "partCount": 4,
+          "partTypes": [
+            "step-start",
+            "tool-searchPubMed",
+            "step-start",
+            "text"
+          ],
+          "partTypeCounts": {
+            "step-start": 2,
+            "tool-searchPubMed": 1,
+            "text": 1
+          },
+          "textPartCount": 1,
+          "textPartLengths": [
+            114
+          ],
+          "totalTextLength": 114,
+          "trimmedCombinedTextLength": 114,
+          "textPartStates": [
+            "done"
+          ],
+          "reasoningPartCount": 0,
+          "toolPartCount": 1,
+          "otherPartCount": 2,
+          "finishReason": null
+        }
+      }
+    ],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": true,
+      "id": "assistant_1787476512509_6q4kk1oj9",
+      "role": "assistant",
+      "partCount": 4,
+      "partTypes": [
+        "step-start",
+        "tool-searchPubMed",
+        "step-start",
+        "text"
+      ],
+      "partTypeCounts": {
+        "step-start": 2,
+        "tool-searchPubMed": 1,
+        "text": 1
+      },
+      "textPartCount": 1,
+      "textPartLengths": [
+        114
+      ],
+      "totalTextLength": 114,
+      "trimmedCombinedTextLength": 114,
+      "textPartStates": [
+        "done"
+      ],
+      "reasoningPartCount": 0,
+      "toolPartCount": 1,
+      "otherPartCount": 2,
+      "finishReason": null
+    }
+  },
+  "durationMs": 13647,
+  "errors": [],
+  "toolErrors": [
+    {
+      "toolName": "searchPubMed",
+      "type": "tool_error",
+      "message": "PubMed ESearch failed with HTTP 429."
+    }
+  ],
+  "verdict": "PASS_WITH_NOTE",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": true,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 114,
+      "trimmedLength": 114
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": true,
+      "actual": "no errors"
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": true,
+      "expected": 1,
+      "actual": 1
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": [
+        "output-available"
+      ]
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": [
+        true
+      ]
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": true,
+      "expectedFailure": true,
+      "matchedExpectedFailure": true,
+      "unexpectedToolErrors": [],
+      "actual": [
+        {
+          "toolName": "searchPubMed",
+          "type": "tool_error",
+          "message": "PubMed ESearch failed with HTTP 429."
+        }
+      ]
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value",
+        "PubMed retrieval phase is complete",
+        "successfully retrieved",
+        "Retrieved PubMed evidence:"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "expected_tool_outcome",
+      "hard": true,
+      "expectedOutcome": "tool_failure",
+      "actualOutcome": "tool_failure",
+      "expectedFailureCategory": "http_error",
+      "actualFailureCategory": "http_error",
+      "expectedFailureStage": "esearch",
+      "actualFailureStage": "esearch",
+      "expectedHttpStatus": 429,
+      "actualHttpStatus": 429,
+      "passed": true
+    },
+    {
+      "assertion": "citation_identifier_grounding",
+      "hard": true,
+      "citedPmids": [],
+      "citedPmcids": [],
+      "citedDois": [],
+      "availablePmids": [],
+      "availablePmcids": [],
+      "availableDois": [],
+      "unsupportedPmids": [],
+      "unsupportedPmcids": [],
+      "unsupportedDois": [],
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "retrieval_failure",
+      "expectedAnyOf": [
+        "could not complete the PubMed search",
+        "PubMed retrieval failed",
+        "could not retrieve PubMed records",
+        "unable to complete the PubMed retrieval"
+      ],
+      "actualMatch": "could not complete the PubMed search",
+      "passed": true
+    },
+    {
+      "assertion": "required_output_group",
+      "hard": true,
+      "groupName": "evidence_status_unknown",
+      "expectedAnyOf": [
+        "cannot determine whether supporting evidence exists",
+        "does not establish whether evidence exists",
+        "cannot determine the state of the evidence",
+        "cannot assess the available PubMed evidence"
+      ],
+      "actualMatch": "cannot determine whether supporting evidence exists",
+      "passed": true
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": [
+        "searchPubMed"
+      ]
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED",
+      "expectedBehaviors": [
+        "明确说明本次 PubMed 检索未能完成",
+        "不把服务失败解释为证据不存在",
+        "保持证据状态未知"
+      ],
+      "forbiddenBehaviors": [
+        "将 Tool failure 描述为数据库中不存在证据",
+        "声称检索成功",
+        "编造 PMID、PMCID、DOI、论文标题或 citation",
+        "暴露 Tool syntax",
+        "将第三方服务失败伪装成医学结论"
+      ]
+    }
+  ],
+  "faultScenario": "http_429",
+  "faultInjectionAcknowledged": true,
+  "faultInjectionMode": "one_shot",
+  "faultInjectionDeterministic": true
+}
