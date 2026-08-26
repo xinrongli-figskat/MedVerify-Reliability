@@ -532,7 +532,7 @@ async function selfTest(protocol, dataset, families) {
     "node:url"
   ]);
   console.log(
-    "Development runner self-test passed: 10 families; 50 variants; stable deterministic plans; live execution guarded; 76 raw files unchanged; no network path reachable."
+    `Development runner self-test passed: 10 families; 50 variants; stable deterministic plans; live execution guarded; ${rawAfter.length} raw files unchanged; no network path reachable.`
   );
 }
 
