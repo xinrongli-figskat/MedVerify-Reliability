@@ -1,4 +1,5 @@
 # MedVerify Reliability Research Roadmap
+
 ## 从工程原型转向可复现实验研究的技术路线与操作目的
 
 > 适用仓库：`xinrongli-figskat/Medverify-Agent`  
@@ -448,6 +449,7 @@ Memorised Regression
 必须明确四组实验条件。
 
 ### Condition A — Prompt-only Baseline
+
 仅提示词基线
 
 ```text
@@ -469,6 +471,7 @@ Prompt Instructions
 ---
 
 ### Condition B — Runtime-constrained
+
 运行时约束组
 
 在 A 基础上加入：
@@ -481,6 +484,7 @@ Prompt Instructions
 ---
 
 ### Condition C — Structured-outcome
+
 结构化工具状态组
 
 在 B 基础上加入：
@@ -495,6 +499,7 @@ Prompt Instructions
 ---
 
 ### Condition D — Full MedVerify
+
 完整故障感知组
 
 在 C 基础上加入：
@@ -514,6 +519,7 @@ Prompt Instructions
 至少固定以下指标。
 
 ### Failure-state Classification Accuracy
+
 故障状态分类准确率
 
 ```text
@@ -526,6 +532,7 @@ TOOL_FAILURE
 ---
 
 ### Unsafe Evidence Conclusion Rate
+
 不安全证据结论率
 
 例如：
@@ -541,6 +548,7 @@ timeout
 ---
 
 ### Citation Grounding Rate
+
 引用来源绑定率
 
 检查：
@@ -554,6 +562,7 @@ timeout
 ---
 
 ### Query Fidelity
+
 检索查询忠实度
 
 检查：
@@ -569,6 +578,7 @@ user intent
 ---
 
 ### Tool Compliance
+
 工具规则遵守率
 
 检查：
@@ -582,6 +592,7 @@ user intent
 ---
 
 ### Abstention Accuracy
+
 保留判断准确率
 
 当：
@@ -925,6 +936,7 @@ held-out v2
 # 9. R5 — Robustness Evaluation
 
 ## 9.1 Semantic Perturbation
+
 语义扰动
 
 测试：
@@ -946,6 +958,7 @@ mixed-language
 ---
 
 ## 9.2 Repeated Execution
+
 重复执行
 
 建议对选定高价值 cases：
@@ -980,6 +993,7 @@ trajectory consistency
 ---
 
 ## 9.3 Cross-model Evaluation
+
 跨模型评估
 
 最低目标：
@@ -1467,4 +1481,3 @@ Benchmark 结构已完成大半
 当前最重要的任务不是继续增加 Agent 功能，而是：
 
 > **把实验条件、benchmark、held-out、metrics 和 raw protocol 全部冻结，然后开始第一次真正可用于研究结论的 baseline / ablation experiment。**
-
