@@ -236,6 +236,10 @@ await assert.rejects(
   (error) => classifyPubMedRequestError(error) === "timeout"
 );
 await assert.rejects(
+  createPubMedFaultFetch("esummary_timeout")(esummaryUrl),
+  (error) => classifyPubMedRequestError(error) === "timeout"
+);
+await assert.rejects(
   (await createPubMedFaultFetch("esearch_malformed_json")(esearchUrl)).json()
 );
 assert.equal(
@@ -248,6 +252,7 @@ assert.equal(
 );
 
 for (const scenario of [
+  "esummary_timeout",
   "esummary_malformed_json",
   "esummary_invalid_schema",
   "success_exact_pmid"

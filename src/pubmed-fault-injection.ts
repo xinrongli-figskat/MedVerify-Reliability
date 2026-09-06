@@ -3,6 +3,7 @@ export const PUBMED_FAULT_SCENARIOS = [
   "http_500",
   "network_error",
   "timeout",
+  "esummary_timeout",
   "esearch_malformed_json",
   "esearch_invalid_schema",
   "esummary_malformed_json",
@@ -141,6 +142,12 @@ export function createPubMedFaultFetch(
       return searchFixture(["12345678"]);
     }
 
+    if (scenario === "esummary_timeout") {
+      throw new DOMException(
+        "Deterministic PubMed ESummary timeout.",
+        "TimeoutError"
+      );
+    }
     if (scenario === "esummary_malformed_json") {
       return new Response("{not-json", { status: 200 });
     }

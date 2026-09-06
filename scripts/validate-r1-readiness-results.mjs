@@ -3,6 +3,13 @@ import { createHash } from "node:crypto";
 import { readFile, readdir } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 import { validate as validateHistorical } from "./validate-reliability-development-results.mjs";
+import {
+  validateManualReview,
+  manualReviewAllowsReadiness
+} from "./validate-reliability-manual-review.mjs";
+
+// Manual-review integration 1.1.0: preserve legacy NOT_READY summaries, but
+// require the complete independently validated 1.0.0 record contract for READY.
 
 const root = new URL("../", import.meta.url);
 const ledgerPath = "tests/reliability/r1-readiness-results.json";
@@ -552,12 +559,50 @@ export async function validate(ledger, { readBytes = bytesFromRepo } = {}) {
       );
       if (Array.isArray(result.manualReview)) {
         equal(
-          result.manualReview.map((review) => review?.type).sort(),
+          result.manualReview
+            .map((review) => review?.reviewType ?? review?.type)
+            .sort(),
           [...(family?.manualReview ?? [])].sort(),
           `${path}.manualReview.types`
         );
         for (const [reviewIndex, review] of result.manualReview.entries()) {
           const reviewPath = `${path}.manualReview[${reviewIndex}]`;
+          if (object(review) && Object.hasOwn(review, "schemaVersion")) {
+            const reviewErrors = await validateManualReview(review, {
+              readBytes
+            });
+            errors.push(
+              ...reviewErrors.map((error) => `${reviewPath}.${error}`)
+            );
+            equal(
+              review.sourceRawPath,
+              result.raw?.path,
+              `${reviewPath}.sourceRawPath`
+            );
+            equal(
+              review.sourceRawSha256,
+              result.raw?.sha256,
+              `${reviewPath}.sourceRawSha256`
+            );
+            equal(review.caseId, result.variantId, `${reviewPath}.caseId`);
+            equal(
+              review.variantId,
+              result.variantId,
+              `${reviewPath}.variantId`
+            );
+            if (ready)
+              need(
+                manualReviewAllowsReadiness(review, reviewErrors),
+                `${reviewPath}.decision`,
+                "READY requires validated manual PASS"
+              );
+            continue;
+          }
+          need(
+            !ready,
+            reviewPath,
+            "READY requires full manual-review record contract; legacy summary is insufficient"
+          );
           if (
             !shape(
               review,
@@ -592,6 +637,253 @@ export async function validate(ledger, { readBytes = bytesFromRepo } = {}) {
     }
   }
   return errors;
+}
+
+async function manualIntegrationSelfTest(ledger) {
+  // Entirely synthetic in-memory evidence: never persist this READY candidate.
+  // These fake decisions are parser fixtures, not execution authorization.
+  const candidate = structuredClone(ledger);
+  candidate.readinessVerdict = "READY";
+  const overlay = new Map();
+  const dataset = JSON.parse(await bytesFromRepo(datasetPath));
+  for (const key of [
+    "measurementFidelityDecision",
+    "liveAuthorizationDecision"
+  ]) {
+    const path = `docs/research/synthetic_${key}.md`;
+    const bytes = Buffer.from(
+      "Synthetic prerequisite for validator testing only."
+    );
+    overlay.set(path, bytes);
+    candidate.prerequisites[key] = {
+      path,
+      sha256: digest(bytes),
+      sourceCommit: closureCommit
+    };
+  }
+  for (const result of candidate.cases) {
+    const variant = dataset.caseVariants.find((x) => x.id === result.variantId);
+    const family = dataset.scenarioFamilies.find(
+      (x) => x.id === result.familyId
+    );
+    const raw = {
+      runId: `synthetic-${variant.id}`,
+      caseId: variant.id,
+      timestamp: "2000-01-01T00:00:00.000Z",
+      benchmarkVariantId: variant.id,
+      benchmarkFamilyId: family.id,
+      benchmarkSplit: "development",
+      benchmarkProtocolVersion: candidate.protocolVersion,
+      benchmarkPlanVersion: candidate.benchmarkPlanVersion,
+      developmentDatasetVersion: candidate.developmentDatasetVersion,
+      benchmarkCoverageCellId: family.coverageCellId,
+      perturbationType: variant.perturbation,
+      language: variant.language,
+      executionPlanVersion: "1.0.0",
+      userInput: variant.userInput,
+      gitCommit: closureCommit,
+      verdict: "PASS_WITH_NOTE",
+      dirtyWorktree: false,
+      sessionIsolated: true,
+      initialMessageCount: 0,
+      errors: [],
+      finalAnswer: "Synthetic validator fixture; not an Agent response.",
+      toolCallCount: 1,
+      toolCalls: [
+        {
+          toolName: "searchPubMed",
+          state: "output-available",
+          output: {
+            success: true,
+            outcome: { kind: family.evidenceState, stage: family.stage },
+            records:
+              family.evidenceState === "zero_results"
+                ? []
+                : [{ pmid: "12345678" }]
+          }
+        }
+      ],
+      faultInjectionAcknowledged: true,
+      faultInjectionMode: "one_shot",
+      faultInjectionDeterministic: true,
+      faultScenario:
+        family.evidenceState === "zero_results"
+          ? "zero_results"
+          : "success_exact_pmid",
+      assertionResults: [
+        "final_answer_non_empty",
+        "runner_completed_without_error",
+        "tool_call_count",
+        "pubmed_routing",
+        "tool_state",
+        "tool_output_required",
+        "tool_errors",
+        "forbidden_output_patterns",
+        "pmid_citation_grounding",
+        "expected_tool_outcome",
+        "tool_name",
+        "citation_identifier_grounding",
+        "expected_record_pmid"
+      ].map((assertion) => ({ assertion, hard: true, passed: true }))
+    };
+    const path = `runs_raw/synthetic-${variant.id}.json`;
+    const bytes = Buffer.from(JSON.stringify(raw));
+    overlay.set(path, bytes);
+    result.status = "COMPLETED";
+    result.raw = { path, sha256: digest(bytes), sourceCommit: closureCommit };
+    result.automaticVerdict = "PASS_WITH_NOTE";
+    result.manualReview = family.manualReview.map((reviewType) => ({
+      schemaVersion: "1.0.0",
+      reviewRecordVersion: "1.0.0",
+      template: false,
+      runId: raw.runId,
+      caseId: variant.id,
+      variantId: variant.id,
+      sourceRawPath: path,
+      sourceRawSha256: digest(bytes),
+      reviewerId: "REV-00000000",
+      rubricVersion: "1.0.0",
+      reviewType,
+      decision: "PASS",
+      rationale: "Synthetic integration test only, not a real review.",
+      reviewedAt: "2000-01-01T00:01:00.000Z"
+    }));
+  }
+  const readBytes = (path) => overlay.get(path) ?? bytesFromRepo(path);
+  assert.deepEqual(await validate(candidate, { readBytes }), []);
+  console.log(
+    "PASS: synthetic full-record READY integration; no readiness evidence created"
+  );
+  const legacyNotReady = structuredClone(candidate);
+  legacyNotReady.readinessVerdict = "NOT_READY";
+  for (const result of legacyNotReady.cases)
+    result.manualReview = result.manualReview.map((review) => ({
+      type: review.reviewType,
+      reviewer: "synthetic-legacy",
+      rubricVersion: "legacy-version",
+      decision: "UNCERTAIN",
+      rationale: "Synthetic backward compatibility test only."
+    }));
+  assert.deepEqual(await validate(legacyNotReady, { readBytes }), []);
+  const uncertainNotReady = structuredClone(candidate);
+  uncertainNotReady.readinessVerdict = "NOT_READY";
+  uncertainNotReady.cases[0].manualReview[0].decision = "UNCERTAIN";
+  assert.deepEqual(await validate(uncertainNotReady, { readBytes }), []);
+  console.log(
+    "PASS: legacy summaries and full UNCERTAIN reviews remain valid NOT_READY evidence formats"
+  );
+  const fixtures = [
+    [
+      "manual FAIL blocks READY",
+      (x) => {
+        x.cases[0].manualReview[0].decision = "FAIL";
+      },
+      ".decision"
+    ],
+    [
+      "manual UNCERTAIN blocks READY",
+      (x) => {
+        x.cases[0].manualReview[0].decision = "UNCERTAIN";
+      },
+      ".decision"
+    ],
+    [
+      "missing required medical review",
+      (x) => {
+        x.cases[1].manualReview.pop();
+      },
+      "manualReview.types"
+    ],
+    [
+      "unfrozen rubric blocks READY",
+      (x) => {
+        x.cases[0].manualReview[0].rubricVersion = "0.1.0-draft";
+      },
+      ".rubricVersion"
+    ],
+    [
+      "review raw SHA mismatch",
+      (x) => {
+        x.cases[0].manualReview[0].sourceRawSha256 = "0".repeat(64);
+      },
+      ".sourceRawSha256"
+    ],
+    [
+      "review run mismatch",
+      (x) => {
+        x.cases[0].manualReview[0].runId = "other";
+      },
+      ".runId"
+    ],
+    [
+      "cross-case review",
+      (x) => {
+        x.cases[0].manualReview = structuredClone(x.cases[1].manualReview);
+      },
+      ".sourceRawPath"
+    ],
+    [
+      "template cannot grant READY",
+      (x) => {
+        x.cases[0].manualReview[0].template = true;
+      },
+      ".template"
+    ],
+    [
+      "missing reviewer blocks READY",
+      (x) => {
+        delete x.cases[0].manualReview[0].reviewerId;
+      },
+      ".reviewerId"
+    ],
+    [
+      "legacy summary cannot grant READY",
+      (x) => {
+        x.cases[0].manualReview = [
+          {
+            type: "epistemic",
+            reviewer: "legacy-test",
+            rubricVersion: "1.0.0",
+            decision: "PASS",
+            rationale: "Synthetic legacy summary."
+          }
+        ];
+      },
+      "legacy summary is insufficient"
+    ]
+  ];
+  for (const [name, mutate, expected] of fixtures) {
+    const x = structuredClone(candidate);
+    mutate(x);
+    const errors = await validate(x, { readBytes });
+    assert(
+      errors.some((error) => error.includes(expected)),
+      `${name}: missing diagnostic`
+    );
+    console.log(`PASS negative integration: ${name}`);
+  }
+  const automaticFailure = structuredClone(candidate);
+  const failedCase = automaticFailure.cases[0];
+  const failedRaw = JSON.parse(overlay.get(failedCase.raw.path));
+  failedRaw.assertionResults[0].passed = false;
+  failedRaw.verdict = "FAIL";
+  const failedBytes = Buffer.from(JSON.stringify(failedRaw));
+  failedCase.raw.sha256 = digest(failedBytes);
+  failedCase.automaticVerdict = "FAIL";
+  for (const review of failedCase.manualReview)
+    review.sourceRawSha256 = digest(failedBytes);
+  const errors = await validate(automaticFailure, {
+    readBytes: (path) =>
+      path === failedCase.raw.path ? failedBytes : readBytes(path)
+  });
+  assert(
+    errors.some((error) =>
+      error.includes("READY requires automatic acceptance")
+    )
+  );
+  console.log(
+    "PASS negative integration: manual PASS cannot override automatic hard FAIL"
+  );
 }
 
 async function selfTest(ledger) {
@@ -865,6 +1157,7 @@ async function selfTest(ledger) {
   console.log(
     `R1 readiness self-test passed: valid NOT_READY checkpoint; ${fixtures.length + historicalFixtures.length + 1} negative fixtures; no files written, no live execution.`
   );
+  await manualIntegrationSelfTest(ledger);
 }
 
 async function main() {

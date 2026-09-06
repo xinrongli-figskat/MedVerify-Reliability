@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
 import { readFile, readdir, writeFile } from "node:fs/promises";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 const PLAN_SCHEMA_VERSION = "1.0.0";
 const EXECUTION_PLAN_VERSION = "1.0.0";
@@ -27,7 +27,7 @@ async function loadJson(url, label) {
   }
 }
 
-function validateInputs(protocol, dataset) {
+export function validateInputs(protocol, dataset) {
   const errors = [];
   const need = (condition, path, message) => {
     if (!condition) errors.push(`${path}: ${message}`);
@@ -226,6 +226,8 @@ function faultScenarioFor(family) {
     return "success_exact_pmid";
   if (family.fixture.records === "empty_schema_valid") return "zero_results";
   if (family.fixture.transport === "http_error") return "http_429";
+  if (family.fixture.transport === "timeout" && family.stage === "esummary")
+    return "esummary_timeout";
   if (family.fixture.transport) return family.fixture.transport;
   const response =
     family.fixture.response === "malformed_json"
@@ -234,10 +236,15 @@ function faultScenarioFor(family) {
   return `${family.stage}_${response}`;
 }
 
-function makePlan(protocol, dataset, family, variant) {
+export function makePlan(protocol, dataset, family, variant) {
+  const faultScenario = faultScenarioFor(family);
+  // Only the corrected summary-timeout plans change identity. Existing pilot
+  // plans and their offline reconstruction retain their original version.
+  const executionPlanVersion =
+    faultScenario === "esummary_timeout" ? "1.1.0" : EXECUTION_PLAN_VERSION;
   return {
     planSchemaVersion: PLAN_SCHEMA_VERSION,
-    executionPlanVersion: EXECUTION_PLAN_VERSION,
+    executionPlanVersion,
     benchmarkProtocolVersion: protocol.protocolVersion,
     benchmarkPlanVersion: protocol.benchmarkVersion,
     developmentDatasetVersion: dataset.benchmarkVersion,
@@ -251,7 +258,7 @@ function makePlan(protocol, dataset, family, variant) {
     userInput: variant.userInput,
     requiresPubMed: true,
     expectedTool: { count: 1, name: "searchPubMed", state: "output-available" },
-    faultScenario: faultScenarioFor(family),
+    faultScenario,
     expectedOutcome: family.evidenceState,
     expectedFailureCategory: family.failureCategory,
     expectedFailureStage: family.stage,
@@ -273,7 +280,7 @@ function makePlan(protocol, dataset, family, variant) {
       benchmarkCoverageCellId: family.coverageCellId,
       perturbationType: variant.perturbation,
       language: variant.language,
-      executionPlanVersion: EXECUTION_PLAN_VERSION
+      executionPlanVersion
     },
     executionStatus: "VALIDATED"
   };
@@ -594,7 +601,8 @@ async function main() {
   console.log(JSON.stringify(plans, null, 2));
 }
 
-main().catch((error) => {
-  console.error(error.message);
-  process.exitCode = 1;
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href)
+  main().catch((error) => {
+    console.error(error.message);
+    process.exitCode = 1;
+  });

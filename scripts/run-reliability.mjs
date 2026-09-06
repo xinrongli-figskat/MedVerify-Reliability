@@ -1,9 +1,10 @@
 import { execFileSync } from "node:child_process";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AgentClient } from "agents/client";
 import { getToolName, isToolUIPart } from "ai";
+import { writeImmutableRun } from "./reliability-raw-writer.mjs";
 
 const repoRoot = fileURLToPath(new URL("../", import.meta.url));
 const casesUrl = new URL("../tests/reliability/cases.json", import.meta.url);
@@ -29,6 +30,7 @@ const PUBMED_FAULT_SCENARIOS = new Set([
   "http_500",
   "network_error",
   "timeout",
+  "esummary_timeout",
   "esearch_malformed_json",
   "esearch_invalid_schema",
   "esummary_malformed_json",
@@ -305,7 +307,7 @@ if (faultScenario !== null) {
 
 await mkdir(runsUrl, { recursive: true });
 const outputUrl = new URL(`${runId}.json`, runsUrl);
-await writeFile(outputUrl, `${JSON.stringify(run, null, 2)}\n`, "utf8");
+await writeImmutableRun(outputUrl, run);
 console.log(`Run 已保存：${fileURLToPath(outputUrl)}`);
 console.log(`Verdict：${evaluation.verdict}`);
 if (evaluation.verdict === "FAIL") process.exitCode = 1;
@@ -878,7 +880,7 @@ async function runSelfTests() {
   const secretText = "fixture-visible-secret";
   const secretReasoning = "fixture-reasoning-secret";
   assertSelfTest(
-    PUBMED_FAULT_SCENARIOS.size === 10,
+    PUBMED_FAULT_SCENARIOS.size === 11,
     "fault scenario closed set"
   );
   assertSelfTest(
