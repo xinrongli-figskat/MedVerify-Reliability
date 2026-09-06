@@ -1,0 +1,63 @@
+{
+  "schemaVersion": "1.0.0",
+  "ledgerVersion": "1.0.0",
+  "continuationId": "R1-READINESS-001",
+  "milestone": "R1-B1",
+  "sourceCheckpoint": "feea8e33e0c83ce348933bdfacb01b7176e88a9c",
+  "protocolVersion": "1.0.0",
+  "benchmarkPlanVersion": "0.1.0-design",
+  "developmentDatasetVersion": "0.1.0-development",
+  "split": "development",
+  "heldOutIncluded": false,
+  "decisionDocument": "docs/research/r1_continuation_decision.md",
+  "historicalPilot": {
+    "id": "M2.11D",
+    "ledgerVersion": "1.0.0",
+    "path": "tests/reliability/development-pilot-results.json",
+    "sha256": "73d22bfdd7f3bec2a3106c557c046da243e47606314a8975a0d41424ed7fe6df",
+    "status": "BLOCKED",
+    "preserveHistoricalState": true,
+    "stoppingRuleDisposition": "PRESERVED_NOT_RESUMED",
+    "followUpDisposition": "PRESERVED_NOT_DISCHARGED"
+  },
+  "closureEvidence": {
+    "failureId": "FC-028",
+    "status": "VERIFIED_CLOSED",
+    "role": "INDEPENDENT_POST_FIX_BASIS",
+    "historicalLedgerPointer": "/postFixRegression",
+    "replacesOriginalPilot": false,
+    "raw": {
+      "path": "runs_raw/2026-08-24T06-50-27-951Z_DEV-010-O.json",
+      "sha256": "6b8e33fe36e74b16d8861b9b6c53ecd61067619d0ea934199fb4d4dce22d2a6a"
+    },
+    "sourceCommit": "74549c81e267539392aa5f4111eee7a1a80f5f0d",
+    "adjudicationDocument": "docs/research/development_pilot_adjudication.md",
+    "classification": "SUPPLEMENTAL_CRITERION_MISMATCH",
+    "canonicalContractFinding": "SATISFIED"
+  },
+  "prerequisites": {
+    "measurementFidelityDecision": null,
+    "liveAuthorizationDecision": null
+  },
+  "liveExecutionRequiresSeparateAuthorization": true,
+  "formalExperimentsAuthorized": false,
+  "readinessVerdict": "NOT_READY",
+  "cases": [
+    {
+      "variantId": "DEV-002-O",
+      "familyId": "DEV-FAM-002",
+      "status": "NOT_RUN",
+      "raw": null,
+      "automaticVerdict": null,
+      "manualReview": null
+    },
+    {
+      "variantId": "DEV-001-O",
+      "familyId": "DEV-FAM-001",
+      "status": "NOT_RUN",
+      "raw": null,
+      "automaticVerdict": null,
+      "manualReview": null
+    }
+  ]
+}

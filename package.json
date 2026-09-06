@@ -27,6 +27,7 @@
     "test:benchmark:development": "node scripts/validate-reliability-benchmark-development.mjs",
     "test:benchmark:development:runner": "node scripts/run-reliability-development.mjs --self-test",
     "test:benchmark:development:results": "node scripts/validate-reliability-development-results.mjs",
+    "test:research:readiness": "node scripts/validate-r1-readiness-results.mjs",
     "test:cases": "node scripts/validate-reliability-cases.mjs",
     "test:pubmed-outcomes": "node --experimental-strip-types scripts/test-pubmed-outcomes.ts",
     "test:pubmed-routing": "node --experimental-strip-types scripts/test-pubmed-routing.ts",
