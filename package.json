@@ -30,6 +30,8 @@
     "test:research:readiness": "node scripts/validate-r1-readiness-results.mjs",
     "test:research:measurement": "node --experimental-strip-types scripts/test-research-measurement.mjs",
     "test:research:manual-review": "node scripts/validate-reliability-manual-review.mjs",
+    "test:research:paired": "node scripts/validate-r1-paired-construct.mjs",
+    "test:research:paired:runner": "node scripts/run-r1-paired-construct.mjs --self-test",
     "test:cases": "node scripts/validate-reliability-cases.mjs",
     "test:pubmed-outcomes": "node --experimental-strip-types scripts/test-pubmed-outcomes.ts",
     "test:pubmed-routing": "node --experimental-strip-types scripts/test-pubmed-routing.ts",

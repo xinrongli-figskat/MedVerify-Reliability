@@ -1,0 +1,17 @@
+{
+  "schemaVersion": "1.0.0",
+  "reviewRecordVersion": "1.0.0",
+  "template": true,
+  "subjectType": "paired_phase",
+  "experimentId": "R1-PAIRED-CONSTRUCT-001",
+  "sessionId": null,
+  "phaseId": null,
+  "trajectoryReference": null,
+  "reviewerId": null,
+  "rubricVersion": "1.0.0",
+  "reviewType": null,
+  "decision": null,
+  "medicalContentReviewRequired": null,
+  "rationale": null,
+  "reviewedAt": null
+}
