@@ -83,7 +83,20 @@ The application constrains agent execution at runtime; the separate harness eval
 
 ### 1. Auditable PubMed Query Guard
 
-The model may propose a PubMed query, but that query is not trusted automatically. A deterministic guard removes unsupported additions such as study-design terms, publication years, conclusion-forcing language (`prove`, `cure`, `eradicate`), Boolean operators, and selected unrelated modifiers when the user did not request them.
+The model may propose a PubMed query, but that query is not trusted automatically.
+The deterministic guard in `src/pubmed-query.ts` derives source concepts from the
+question, removes request framing, and checks proposed terms against those
+concepts. A small explicit alias/translation vocabulary supports terms such as
+`ascorbic acid` / `vitamin C`, Chinese `毒性` / `toxicity`, and `治愈率` / `cure rate`.
+Unrequested additions are removed; missing source concepts block retrieval before
+any PubMed request. A question about whether vitamin C cures cancer therefore
+cannot silently acquire a restriction such as `supuration` or lose `cancer`.
+
+This is conservative lexical validation, not general semantic understanding.
+Unknown translations, natural-language exclusions/alternatives, and unsupported
+query syntax require clarification. To supply an advanced expression explicitly,
+use `Use this exact PubMed query: ...`; the server preserves that user expression
+instead of the model's rewrite. Exact PMID lookup retains its separate path.
 
 Each tool result preserves the transformation:
 
@@ -91,7 +104,11 @@ Each tool result preserves the transformation:
 proposedQuery → Query Guard → executedQuery
 ```
 
-It also records `modified`, `removedTerms`, `queryMode`, `forcedExactPmid`, and `extractedPmid`. This makes query drift observable rather than silently accepting a model-rewritten retrieval task.
+It also records `modified`, `removedTerms`, `queryMode`, `forcedExactPmid`, and
+`extractedPmid`, plus validation status, source spans, normalization mappings,
+rejected terms, missing concepts, and a rejection reason. A rejected query has an
+empty `executedQuery` and a `query_guard_error` at `preflight`; the final answer
+asks for clarification rather than claiming PubMed returned no records.
 
 ### 2. Exact PMID Verification
 
@@ -226,11 +243,20 @@ cd Medverify-Agent
 npm install
 ```
 
-Create `.env` with an email identifying requests to NCBI:
+Copy the local configuration template:
 
-```env
-NCBI_EMAIL=your-email@example.com
+```bash
+cp .env.example .env
 ```
+
+Set `NCBI_EMAIL` in `.env` to your real contact email. The app sends this value
+with PubMed requests; it is not an API key. `.env` is ignored by Git.
+Restart the development server after changing the configuration. If you already
+use `.dev.vars`, set `NCBI_EMAIL` there instead, because that file takes precedence
+over `.env` for local Worker variables.
+
+An empty or missing `NCBI_EMAIL` produces a `configuration_error` at `preflight`:
+no PubMed request is sent, and empty records do not mean the search found nothing.
 
 The remote Workers AI binding requires Cloudflare authentication (for example, `npx wrangler login`). Then start the app and open [http://localhost:5173](http://localhost:5173):
 
@@ -243,6 +269,7 @@ npm run dev
 ```bash
 npm run check             # format check, lint, TypeScript
 npm run test:cases        # validate the 8-case registry
+npm run test:pubmed-query # deterministic query-drift, translation, and PMID checks
 npm run test:reliability  # harness dry run; no live Agent connection
 ```
 
@@ -263,7 +290,7 @@ MedVerify is an experimental reliability engineering project, not a clinical dec
 
 - **Metadata is not article-level evidence.** ESummary titles and bibliographic fields cannot verify claims that require abstracts or full text.
 - **Abstract/full-text verification is not implemented.** Claim-to-evidence verification remains future work.
-- **Routing and guarding remain rule-based.** Keyword and regular-expression logic, especially English-oriented rules, can miss or mishandle phrasing.
+- **Routing and guarding remain rule-based.** Query grounding supports simple English and a limited audited Chinese vocabulary. Unknown translations or complex wording may be rejected even when a human could construct a valid query. Source-word matching does not establish semantic equivalence or document relevance; user-supplied misspellings can still reach retrieval. Explicit queries bypass natural-language grounding and retain the user's own restrictions.
 - **Retrieval relevance filtering is incomplete.** PubMed relevance ranking can return weakly related records, and there is no deterministic relevance filter yet.
 - **Output hardening is incomplete.** Runtime tool disabling, finalization instructions, and leakage assertions exist, but there is no final output-layer hard filter.
 - **Network resilience is incomplete.** PubMed requests do not yet implement explicit timeout, retry/backoff, or HTTP 429-specific handling.

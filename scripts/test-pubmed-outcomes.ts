@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import type { UIMessageChunk } from "ai";
 import { createPubMedFaultFetch } from "../src/pubmed-fault-injection.ts";
 import {
+  buildPubMedFinalizationSystemPrompt,
   classifyPubMedRequestError,
   createPubMedFinalAnswerTransform,
   deterministicPubMedFinalAnswer,
@@ -41,6 +42,30 @@ const failureOutcome = {
   stage: "esearch",
   httpStatus: 429
 } satisfies PubMedOutcome;
+const rejectedQueryOutcome = {
+  kind: "tool_failure",
+  category: "query_guard_error",
+  stage: "preflight"
+} satisfies PubMedOutcome;
+const rejectedQueryAnswer = deterministicPubMedFinalAnswer(
+  { outcome: rejectedQueryOutcome, toolOutput: null },
+  "PubMed returned no records, so no evidence exists."
+);
+assert.match(rejectedQueryAnswer, /no search was sent/);
+assert.match(rejectedQueryAnswer, /Please clarify/);
+assert.doesNotMatch(
+  rejectedQueryAnswer,
+  /returned no records|no evidence exists/
+);
+assert.ok(
+  buildPubMedFinalizationSystemPrompt(rejectedQueryOutcome, "").includes(
+    rejectedQueryAnswer
+  )
+);
+assert.deepEqual(
+  readPubMedOutcome({ outcome: rejectedQueryOutcome }),
+  rejectedQueryOutcome
+);
 
 assert.equal(
   validatePubMedSearchPayload({
@@ -214,6 +239,30 @@ assert.equal(
   "I could not complete the PubMed search. This failed retrieval cannot determine whether supporting evidence exists."
 );
 assert.doesNotMatch(preFinalText, /untrusted text/);
+
+const rejectedStream = new ReadableStream<UIMessageChunk>({
+  start(controller) {
+    controller.enqueue({ type: "text-start", id: "rejected-query" });
+    controller.enqueue({
+      type: "text-delta",
+      id: "rejected-query",
+      delta: "PubMed returned no records, so no evidence exists."
+    });
+    controller.enqueue({ type: "text-end", id: "rejected-query" });
+    controller.enqueue({ type: "finish" });
+    controller.close();
+  }
+}).pipeThrough(
+  createPubMedFinalAnswerTransform(() => ({
+    outcome: rejectedQueryOutcome,
+    toolOutput: null
+  }))
+);
+let rejectedStreamText = "";
+for await (const chunk of rejectedStream) {
+  if (chunk.type === "text-delta") rejectedStreamText += chunk.delta;
+}
+assert.equal(rejectedStreamText, rejectedQueryAnswer);
 
 const esearchUrl = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi";
 const esummaryUrl =

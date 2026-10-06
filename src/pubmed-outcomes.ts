@@ -253,6 +253,15 @@ export function buildPubMedFinalizationSystemPrompt(
   outcome: PubMedOutcome,
   successfulRetrievalPrompt: string
 ) {
+  if (
+    outcome.kind === "tool_failure" &&
+    outcome.category === "query_guard_error"
+  ) {
+    return `You are MedVerify Agent V0.2. Query validation stopped retrieval before any PubMed request.
+Do not call a Tool, emit Tool syntax, or claim PubMed returned zero records.
+Return exactly this text and nothing else:
+"I could not safely translate your question into a PubMed query, so no search was sent. Please clarify the topic and constraints, or provide a query using 'Use this exact PubMed query: ...'. This does not establish whether supporting evidence exists."`;
+  }
   if (outcome.kind === "successful_records") {
     return `${successfulRetrievalPrompt}
 
@@ -342,6 +351,12 @@ export function deterministicPubMedFinalAnswer(
   generatedAnswer: string
 ) {
   const { outcome } = context;
+  if (
+    outcome.kind === "tool_failure" &&
+    outcome.category === "query_guard_error"
+  ) {
+    return "I could not safely translate your question into a PubMed query, so no search was sent. Please clarify the topic and constraints, or provide a query using 'Use this exact PubMed query: ...'. This does not establish whether supporting evidence exists.";
+  }
   if (outcome.kind === "zero_results") {
     return "This search returned no PubMed records. This does not prove that no evidence exists in PubMed or the scientific literature.";
   }

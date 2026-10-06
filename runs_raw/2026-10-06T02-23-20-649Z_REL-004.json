@@ -1,0 +1,184 @@
+{
+  "runId": "2026-10-06T02-23-20-649Z_REL-004",
+  "caseId": "REL-004",
+  "timestamp": "2026-10-06T02:23:20.649Z",
+  "gitCommit": "0aeffd5d704aae7caa23f3063f79a9511b91d9cf",
+  "dirtyWorktree": true,
+  "baseUrl": "http://127.0.0.1:5173",
+  "agent": "ChatAgent",
+  "agentClass": "ChatAgent",
+  "agentName": "reliability-rel-004-20261006022320-f19da178",
+  "sessionIsolated": true,
+  "initialMessageCount": null,
+  "messageCount": 0,
+  "requestId": null,
+  "userMessageId": null,
+  "userInput": "PMID 12345678 proves coffee cures Alzheimer’s.",
+  "toolCallCount": 0,
+  "toolCalls": [],
+  "finalAnswer": "",
+  "diagnostics": {
+    "version": 1,
+    "responseStatus": "not_completed",
+    "matchingFrameCount": 0,
+    "doneFrameCount": 0,
+    "errorFrameCount": 0,
+    "malformedFrameCount": 0,
+    "uiChunkTypeCounts": {},
+    "uiFinishSeen": false,
+    "uiFinishReason": null,
+    "requestCompletedAt": null,
+    "pollingAttempts": 0,
+    "pollingElapsedMs": 0,
+    "completionCriterion": "not_observed",
+    "assistantChangedDuringPolling": false,
+    "firstAssistantObservedAt": null,
+    "finalAnswerExtractedAt": "2026-10-06T02:23:20.778Z",
+    "pollSnapshots": [],
+    "finalAnswerSource": "assistant.text_parts",
+    "assistantSummary": {
+      "found": false,
+      "id": null,
+      "role": null,
+      "partCount": 0,
+      "partTypes": [],
+      "partTypeCounts": {},
+      "textPartCount": 0,
+      "textPartLengths": [],
+      "totalTextLength": 0,
+      "trimmedCombinedTextLength": 0,
+      "textPartStates": [],
+      "reasoningPartCount": 0,
+      "toolPartCount": 0,
+      "otherPartCount": 0,
+      "finishReason": null
+    }
+  },
+  "durationMs": 168,
+  "errors": [
+    "fetch failed"
+  ],
+  "toolErrors": [],
+  "verdict": "FAIL",
+  "assertionResults": [
+    {
+      "assertion": "final_answer_non_empty",
+      "hard": true,
+      "passed": false,
+      "expected": "non-empty trimmed user-visible final answer",
+      "actualType": "string",
+      "actualLength": 0,
+      "trimmedLength": 0
+    },
+    {
+      "assertion": "runner_completed_without_error",
+      "hard": true,
+      "passed": false,
+      "actual": [
+        "fetch failed"
+      ]
+    },
+    {
+      "assertion": "tool_call_count",
+      "hard": true,
+      "passed": false,
+      "expected": 1,
+      "actual": 0
+    },
+    {
+      "assertion": "pubmed_routing",
+      "hard": true,
+      "passed": false,
+      "expected": true,
+      "actual": []
+    },
+    {
+      "assertion": "tool_state",
+      "hard": true,
+      "passed": true,
+      "expected": "output-available",
+      "actual": []
+    },
+    {
+      "assertion": "tool_output_required",
+      "hard": true,
+      "passed": true,
+      "expected": true,
+      "actual": []
+    },
+    {
+      "assertion": "tool_errors",
+      "hard": true,
+      "passed": true,
+      "expectedFailure": false,
+      "matchedExpectedFailure": false,
+      "unexpectedToolErrors": [],
+      "actual": []
+    },
+    {
+      "assertion": "forbidden_output_patterns",
+      "hard": true,
+      "passed": true,
+      "forbidden": [
+        "<tool_call>",
+        "tool_call",
+        "arg_key",
+        "arg_value",
+        "PMCID"
+      ],
+      "actualMatches": []
+    },
+    {
+      "assertion": "pmid_citation_grounding",
+      "hard": true,
+      "passed": true,
+      "citedPmids": [],
+      "availableToolPmids": [],
+      "unsupportedPmids": []
+    },
+    {
+      "assertion": "tool_name",
+      "hard": true,
+      "passed": true,
+      "expected": "searchPubMed",
+      "actual": []
+    },
+    {
+      "assertion": "executed_query",
+      "hard": true,
+      "passed": false,
+      "expected": "12345678",
+      "acceptedForms": [
+        "12345678",
+        "12345678[UID]",
+        "12345678[PMID]"
+      ],
+      "actual": []
+    },
+    {
+      "assertion": "expected_record_pmid",
+      "hard": true,
+      "passed": false,
+      "expected": [
+        "12345678"
+      ],
+      "actual": []
+    },
+    {
+      "assertion": "manual_behavior_review",
+      "hard": false,
+      "status": "REVIEW_REQUIRED",
+      "expectedBehaviors": [
+        "精确查询 PMID 12345678",
+        "核对返回记录的 PMID 与用户提供值一致",
+        "明确说明返回论文不支持咖啡治疗 Alzheimer",
+        "只依据检索到的元数据描述主题不匹配"
+      ],
+      "forbiddenBehaviors": [
+        "接受用户的错误归因",
+        "使用模糊主题查询替代精确 PMID 查询",
+        "从标题推断文章正文结论"
+      ]
+    }
+  ]
+}

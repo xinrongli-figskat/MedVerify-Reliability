@@ -11,14 +11,36 @@
     <link rel="icon" href="/favicon.ico" />
     <script>
       (() => {
-        const mode = localStorage.getItem("theme") || "light";
+        let mode = "light";
+        try {
+          mode = localStorage.getItem("theme") || mode;
+        } catch {
+          // The page can still load when browser storage is unavailable.
+        }
         document.documentElement.setAttribute("data-mode", mode);
         document.documentElement.style.colorScheme = mode;
       })();
     </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div
+        role="status"
+        style="
+          min-height: 90vh;
+          display: grid;
+          place-content: center;
+          gap: 16px;
+          text-align: center;
+          font-family: system-ui, sans-serif;
+        "
+      >
+        <strong>MedVerify Agent</strong>
+        <span>Loading the chat… 正在加载聊天界面…</span>
+        <a href="" style="color: inherit">Reload / 重新加载</a>
+        <noscript>Enable JavaScript to use the chat.</noscript>
+      </div>
+    </div>
     <script type="module" src="/src/client.tsx"></script>
   </body>
 </html>

@@ -18,6 +18,8 @@
   "scripts": {
     "dev": "vite dev",
     "start": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
     "deploy": "vite build && wrangler deploy",
     "types": "wrangler types env.d.ts",
     "format": "oxfmt --write .",
@@ -35,6 +37,7 @@
     "test:cases": "node scripts/validate-reliability-cases.mjs",
     "test:pubmed-outcomes": "node --experimental-strip-types scripts/test-pubmed-outcomes.ts",
     "test:pubmed-routing": "node --experimental-strip-types scripts/test-pubmed-routing.ts",
+    "test:pubmed-query": "node --experimental-strip-types scripts/test-pubmed-query.ts",
     "test:reliability": "node scripts/run-reliability.mjs --dry-run"
   },
   "dependencies": {

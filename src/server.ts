@@ -30,6 +30,7 @@ import {
   type PubMedRecord
 } from "./pubmed-outcomes";
 import { routePubMedRequest } from "./pubmed-routing";
+import { preparePubMedQuery } from "./pubmed-query";
 
 const MEDVERIFY_SYSTEM_PROMPT = `
 You are MedVerify Agent V0.2, a medical question-answering and reliability assistant.
@@ -70,7 +71,12 @@ PUBMED QUERY POLICY
 
 When constructing a PubMed query:
 
-- Preserve the user's core biomedical topic.
+- Preserve every biomedical topic and explicit constraint in the user's question.
+- Use the user's own terms whenever possible. Do not add synonyms, modifiers, outcomes, populations, years, or study designs without support in the question.
+- Keep the claim being evaluated separate from the retrieval topic. A question asking whether vitamin C cures cancer should use the topic query "vitamin C cancer".
+- Preserve explicitly requested endpoints such as "cure rate"; do not confuse an endpoint with a request to prove a cure.
+- Natural-language queries are checked against source concepts and a small audited translation/synonym vocabulary. Missing concepts or unsupported relationships can block retrieval before any PubMed request.
+- When the user supplies 'Use this exact PubMed query: ...', preserve that expression; the server will execute the user's explicit expression.
 - Do not add a study-design restriction such as randomized controlled trial, meta-analysis, cohort study, or review unless the user explicitly requested that study design.
 - Do not encode the user's desired conclusion as a required search constraint merely to force PubMed to confirm it.
 - Prefer a concise topic-oriented query that maximizes retrieval recall.
@@ -478,118 +484,6 @@ function classifyClinicalEmergency(
   return null;
 }
 
-type PubMedQueryGuardResult = {
-  executedQuery: string;
-  modified: boolean;
-  removedTerms: string[];
-};
-
-function escapeRegExp(value: string): string {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-}
-
-function guardPubMedQuery(
-  proposedQuery: string,
-  originalUserText: string
-): PubMedQueryGuardResult {
-  const originalText = originalUserText.toLowerCase();
-  const originalQuery = proposedQuery.trim();
-  let guardedQuery = originalQuery;
-  const removedTerms = new Set<string>();
-
-  const removeTermUnlessRequested = (term: string, alwaysRemove = false) => {
-    if (!alwaysRemove && originalText.includes(term.toLowerCase())) {
-      return;
-    }
-
-    const flexibleTerm = escapeRegExp(term).replace(/\s+/g, "\\s+");
-    const pattern = new RegExp(`\\b${flexibleTerm}\\b`, "gi");
-    const nextQuery = guardedQuery.replace(pattern, " ");
-
-    if (nextQuery !== guardedQuery) {
-      guardedQuery = nextQuery;
-      removedTerms.add(term);
-    }
-  };
-
-  const studyDesignTerms = [
-    "randomized controlled trial",
-    "randomised controlled trial",
-    "randomized trial",
-    "randomised trial",
-    "clinical trial",
-    "systematic review",
-    "meta-analysis",
-    "meta analysis",
-    "cohort study",
-    "case-control study"
-  ];
-
-  for (const term of studyDesignTerms) {
-    removeTermUnlessRequested(term);
-  }
-
-  const conclusionForcingTerms = [
-    "proves",
-    "prove",
-    "proven",
-    "cures",
-    "cure",
-    "eradicates",
-    "eradicate"
-  ];
-
-  for (const term of conclusionForcingTerms) {
-    removeTermUnlessRequested(term, true);
-  }
-
-  const unsupportedModifierTerms = [
-    "widely",
-    "discussed",
-    "discussion",
-    "perspective",
-    "perspectives",
-    "toxicity",
-    "limitation",
-    "limitations",
-    "achievement",
-    "achievements"
-  ];
-
-  for (const term of unsupportedModifierTerms) {
-    removeTermUnlessRequested(term);
-  }
-
-  guardedQuery = guardedQuery.replace(/\b(?:19|20)\d{2}\b/g, (year) => {
-    if (originalText.includes(year)) {
-      return year;
-    }
-
-    removedTerms.add(year);
-    return " ";
-  });
-
-  for (const operator of ["AND", "OR", "NOT"]) {
-    const operatorPattern = new RegExp(`\\b${operator}\\b`, "i");
-
-    if (!operatorPattern.test(originalUserText)) {
-      removeTermUnlessRequested(operator, true);
-    }
-  }
-
-  guardedQuery = guardedQuery
-    .replace(/\(\s*\)/g, " ")
-    .replace(/\s+/g, " ")
-    .replace(/^[-,:;\s]+|[-,:;\s]+$/g, "")
-    .trim();
-
-  return {
-    executedQuery: guardedQuery,
-    modified: guardedQuery !== originalQuery,
-    removedTerms: [...removedTerms]
-  };
-}
-
 export class ChatAgent extends AIChatAgent<Env> {
   maxPersistedMessages = 100;
   chatRecovery = true;
@@ -738,7 +632,7 @@ export class ChatAgent extends AIChatAgent<Env> {
                 .min(2)
                 .max(300)
                 .describe(
-                  "A concise PubMed search query. PubMed field tags may be used when useful."
+                  "A concise topic query preserving the user's terms and explicit constraints. Use field tags only in an explicitly supplied PubMed query."
                 ),
 
               maxResults: z.coerce
@@ -755,27 +649,11 @@ export class ChatAgent extends AIChatAgent<Env> {
           execute: async (input) => {
             const proposedQuery = "query" in input ? input.query : null;
             const queryMode = extractedPmid ? "exact_pmid" : "search";
-            const exactPmidQuery = extractedPmid
-              ? `${extractedPmid}[UID]`
-              : null;
-            const queryGuard = exactPmidQuery
-              ? {
-                  executedQuery: exactPmidQuery,
-                  modified: proposedQuery !== exactPmidQuery,
-                  removedTerms: [] as string[],
-                  forcedExactPmid: true
-                }
-              : proposedQuery
-                ? {
-                    ...guardPubMedQuery(proposedQuery, latestUserText),
-                    forcedExactPmid: false
-                  }
-                : {
-                    executedQuery: "",
-                    modified: false,
-                    removedTerms: [] as string[],
-                    forcedExactPmid: false
-                  };
+            const queryGuard = preparePubMedQuery(
+              proposedQuery,
+              latestUserText,
+              extractedPmid
+            );
             const executedQuery = queryGuard.executedQuery;
             const maxResults = extractedPmid
               ? 1
@@ -790,13 +668,19 @@ export class ChatAgent extends AIChatAgent<Env> {
               queryGuard: {
                 modified: queryGuard.modified,
                 removedTerms: queryGuard.removedTerms,
-                forcedExactPmid: queryGuard.forcedExactPmid
+                forcedExactPmid: queryGuard.forcedExactPmid,
+                status: queryGuard.status,
+                groundedConcepts: queryGuard.groundedConcepts,
+                missingConcepts: queryGuard.missingConcepts,
+                rejectedTerms: queryGuard.rejectedTerms,
+                normalizations: queryGuard.normalizations,
+                rejectionReason: queryGuard.rejectionReason
               },
               queryMode,
               extractedPmid
             };
 
-            if (executedQuery.length < 2) {
+            if (queryGuard.status === "rejected") {
               return {
                 success: false,
                 ...queryAudit,
@@ -805,8 +689,7 @@ export class ChatAgent extends AIChatAgent<Env> {
                   category: "query_guard_error",
                   stage: "preflight"
                 } satisfies PubMedOutcome,
-                error:
-                  "The proposed PubMed query was blocked because no safe topic terms remained after query guarding.",
+                error: `PubMed search was not executed: query validation failed (${queryGuard.rejectionReason}). Please clarify the topic and constraints, or provide an explicit PubMed query using 'Use this exact PubMed query: ...'.`,
                 records: []
               };
             }
@@ -821,7 +704,7 @@ export class ChatAgent extends AIChatAgent<Env> {
                   stage: "preflight"
                 } satisfies PubMedOutcome,
                 error:
-                  "NCBI_EMAIL is not configured. PubMed search was not executed.",
+                  "NCBI_EMAIL is not configured. Set NCBI_EMAIL to your contact email in .env (or .dev.vars if present) and restart the development server. For a deployed Worker, configure NCBI_EMAIL in its environment. PubMed search was not executed.",
                 records: []
               };
             }
